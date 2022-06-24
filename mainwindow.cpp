@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     tcherSits.load(":/images/teatcherSits.png");
     tcher1.load(":/images/teatcher3-1.png");tcher2.load(":/images/teatcher3-2.png");tcher3.load(":/images/teatcher3-3.png");
     tcher4.load(":/images/teatcher3-4.png");tcher5.load(":/images/teatcher3-5.png");tcher6.load(":/images/teatcher3-6.png");
+    statKind.load(":/images/statKind.png");statNorm.load(":/images/statNorm.png");statEvil.load(":/images/statEvil.png");
     //*************Звуки***************
     // Звонок
     m_player = new QMediaPlayer(this);
@@ -61,6 +62,17 @@ MainWindow::MainWindow(QWidget *parent)
         (labels+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
         (labels+k)->show();
     }
+    // Выделение памяти под символы-подсказки состояния учеников
+    labSymbols = new QLabel[30];
+    /*for (int i = 0, j = 0, k = 0; k<15; i++, k++)
+    {
+        if (i == 3) {i = 0; j++;}
+        (labSymbols+k)->setParent(this);
+        //(labSymbols+k)->setPixmap(crossOff);
+        (labSymbols+k)->setGeometry(180+i*160,320+j*100,31,31);
+        (labSymbols+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
+        (labSymbols+k)->show();
+    }*/
     // Счётчик кол-ва доступных для размещения парт
     labCounter = new QLabel(this);
     labCounter->setFont(QFont("Franklin Gothic Demi Cond", 20));
@@ -310,6 +322,38 @@ void MainWindow::AddToCounter(int a)
     labCounter->setText(s);
 }
 
+// Показать символы-подсказки напротив каждого из учеников
+void MainWindow::ShowSymbols()
+{
+    int wdth, hght;
+    wdth = statNorm.width();hght = statNorm.height();
+    for (int i = 0, j = 0, k = 0; k<30; i++, k+=2)
+        {
+            if (i == 3) {i = 0; j++;}
+            if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
+            {
+                (labSymbols+k)->setParent(this);
+                // Смайлик в зависимости от склонности к нарушению дисциплины
+                if (classRoom->getStRuffian(k) > 70)(labSymbols+k)->setPixmap(statEvil);
+                else if (classRoom->getStRuffian(k) < 30) (labSymbols+k)->setPixmap(statKind);
+                else (labSymbols+k)->setPixmap(statNorm);
+                (labSymbols+k)->setGeometry(142+i*160,315+j*100,wdth,hght);
+                (labSymbols+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
+                (labSymbols+k)->show();
+            }
+            if (classRoom->GetPlan(i+1,j+1) == 2) // Если в плане двойная парта, то отобразить подсказку и для соседа
+            {
+                (labSymbols+k+1)->setParent(this);
+                if (classRoom->getStRuffian(k+1) > 70)(labSymbols+k+1)->setPixmap(statEvil);
+                else if (classRoom->getStRuffian(k+1) < 30) (labSymbols+k+1)->setPixmap(statKind);
+                else (labSymbols+k+1)->setPixmap(statNorm);
+                (labSymbols+k+1)->setGeometry(142+i*160+55,315+j*100,wdth,hght);
+                (labSymbols+k+1)->installEventFilter(this); // Для перехвата событий для каждой из парт
+                (labSymbols+k+1)->show();
+            }
+        }
+}
+
 // Учитель заходит в класс
 void MainWindow::tcherGoes()
 {
@@ -408,6 +452,7 @@ void MainWindow::BeginLsn()
     time->start();            // Начать отсчет времени
     timer2->start(100);       // Запустить анимацию захода учителя в класс
     labMinutes->show();labSeconds->show(); // Секундомер
+    ShowSymbols();
 }
 
 void MainWindow::on_bDel_clicked()

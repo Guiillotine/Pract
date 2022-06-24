@@ -37,5 +37,8 @@
         <file>images/Blank.ico</file>
         <file>images/deskg.png</file>
         <file>images/deskb.png</file>
+        <file>images/statEvil.png</file>
+        <file>images/statKind.png</file>
+        <file>images/statNorm.png</file>
     </qresource>
 </RCC>

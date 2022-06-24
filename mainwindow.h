@@ -33,6 +33,7 @@ public:
     void EditClass(int row, int number); // Редактирование класса на экране: изменение парты с заданным рядом и номером
     void Dragging(QLabel *lab, QPoint *point);  // Перетаскивание мышью парты lab за место с координатами point
     void AddToCounter(int a);                   // Добавить к счётчику доступных для размещения парт a
+    void ShowSymbols();                         // Показать символы-подсказки состояния учеников на экране
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -55,12 +56,14 @@ private:
     QPixmap tcherSits;                  // Учитель сидит
     QPixmap desk1,desk2;                // Одноместная и двухместная парты
     QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
+    QPixmap statKind,statNorm,statEvil; // Символические картинки - подсказки состояния ученика
     QPalette palette;                   // Для установки заднего фона окна
     QTimer *timer,*timerDrag,*timer2;   // Таймеры
     QTime  *time;                       // Время
     QPoint *point1,*point2,*pointDel;   // Координаты центра некоторых label
     QLabel *labMinutes, *labSeconds;    // Под минуты и секунды таймера
-    QLabel *labels;                     //
+    QLabel *labels;                     // Все парты
+    QLabel *labSymbols;                 // Символы-подсказки состояния ученика
     QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
     QLabel *labTcher;                                  // Учитель
     QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню
