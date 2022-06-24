@@ -1,2 +1,41 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/">
+        <file>images/class.png</file>
+        <file>images/desk.png</file>
+        <file>images/deskOne.png</file>
+        <file>images/door.png</file>
+        <file>images/doorOpen.png</file>
+        <file>images/pupil.png</file>
+        <file>images/pupilGirl.png</file>
+        <file>images/teathersDesk.png</file>
+        <file>images/classCl.png</file>
+        <file>images/classOp.png</file>
+        <file>images/classs.png</file>
+        <file>images/teatcher3-1.png</file>
+        <file>images/teatcher3-2.png</file>
+        <file>images/teatcher3-3.png</file>
+        <file>images/teatcher3-4.png</file>
+        <file>images/teatcher3-5.png</file>
+        <file>images/teatcher3-6.png</file>
+        <file>images/teatcherSits.png</file>
+        <file>images/cross.png</file>
+        <file>images/menu.png</file>
+        <file>images/menu1.png</file>
+        <file>images/menu2.png</file>
+        <file>images/classm.png</file>
+        <file>images/crossGr.png</file>
+        <file>images/deskbb.png</file>
+        <file>images/deskbg.png</file>
+        <file>images/deskgb.png</file>
+        <file>images/deskgg.png</file>
+        <file>images/deskOneb.png</file>
+        <file>images/deskOnegpsd.png</file>
+        <file>images/menuCross.png</file>
+        <file>images/delete.png</file>
+        <file>images/icon.ico</file>
+        <file>images/plus2.ico</file>
+        <file>images/classmOp.png</file>
+        <file>sounds/call.wav</file>
+        <file>images/Blank.ico</file>
+    </qresource>
+</RCC>
