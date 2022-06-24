@@ -8,9 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->bCont->hide();
-    mainTimer = new QTimer(this);                                  // Главный таймер
+    timer = new QTimer(this);                                      // Секундомер для засечения времени урока
     timerDrag = new QTimer(this);                                  // Таймер для замера времени от одного нажатия клавиши до следующего
     timer2 = new QTimer(this);                                     // Таймер для анимации перед началом урока (учитель входит в класс)
+    connect(timer, SIGNAL(timeout()),this, SLOT(Stopwatch()));  // Связать таймер со слотом - секундомером
     connect(timer2, SIGNAL(timeout()),this, SLOT(tcherGoes()));  // Связать таймер 2 со слотом
     time = new QTime(0,0,0);
     //************Картинки*************
@@ -29,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_player = new QMediaPlayer(this);
     m_playlist = new QMediaPlaylist(this);
     m_player->setPlaylist(m_playlist);
-    m_playlist->addMedia(QUrl("qrc:/sounds/call.wav"));
+    m_playlist->addMedia(QUrl("call2.wav"));
+    //m_playlist->addMedia(QUrl("qrc:/sounds/call.wav"));
     //m_playlist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
     //
     scrollArea = new QScrollArea();                    // Полосы прокрутки при уменьшении размеров окна
@@ -79,6 +81,20 @@ MainWindow::MainWindow(QWidget *parent)
     labMenu2->installEventFilter(this);                // Для перехвата событий для labMenu1
     labMenu2->setPixmap(menu2);
     labMenu2->setGeometry(750,270,menu2.width(),menu2.height());
+    // Секундомер
+    labMinutes = new QLabel(this);
+    labMinutes->setGeometry(802,10,80,40);
+    labMinutes->setFont(QFont("Franklin Gothic Demi Cond", 20));
+    labMinutes->setStyleSheet("QLabel {color: #ddc6af;}");
+    labMinutes->setText("00");
+    labMinutes->hide();
+    labSeconds = new QLabel(this);
+    labSeconds->setGeometry(830,10,80,40);
+    labSeconds->setFont(QFont("Franklin Gothic Demi Cond", 20));
+    labSeconds->setStyleSheet("QLabel {color: #ddc6af;}");
+    labSeconds->setText(":00");
+    labSeconds->hide();
+    //*********************************
     // Выпадающий список с предметами
     cmbbox = new QComboBox(this);
     cmbbox->setGeometry(765,6,135,20);
@@ -294,7 +310,6 @@ void MainWindow::AddToCounter(int a)
     labCounter->setText(s);
 }
 
-
 // Учитель заходит в класс
 void MainWindow::tcherGoes()
 {
@@ -337,13 +352,44 @@ if(f)
     {
         labTcher->setPixmap(tcherSits);
         labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
-        timer2->stop(); // Отключение таймера по достижении объектом нужной точки на экране
+        timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране
+        timer->start(125);// Запустить секундомер
     }
 }
 }
 
-void MainWindow::BeginLsn()
+void MainWindow::Stopwatch()
 {
+    static int min = 0,sec = 0;
+    sec++;
+    if (sec == 60)
+    {
+        min++;
+        sec = 0;
+    }
+    if (min < 10) labMinutes->setText("0" + QString::number(min));
+    else labMinutes->setText(QString::number(min));
+    if (sec < 10) labSeconds->setText(":0"+QString::number(sec));
+    else labSeconds->setText(":"+QString::number(sec));
+    if (min == 40) timer->stop();
+}
+
+void MainWindow::BeginLsn()
+{  //Проверка: начать урок только если параметры указаны для всех учеников
+    for(int j = 0, k = 0; j < 5; j++)
+        for (int i = 0; i < 3; i++, k+=2)
+            if (classRoom->GetPlan(i+1,j+1) != 0)
+                if (classRoom->getSex(k) == "")
+                {
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle(" ");
+                    msgBox.setIcon(QMessageBox::Critical);
+                    msgBox.setText("Параметры указаны не для всех учеников");
+                    msgBox.setWindowIcon(blank);
+                    msgBox.exec();
+                    return;
+                }
+    // Если проверка пройдена, то начинается урок
     labMenu1->hide();
     labMenu2->hide();
     labDelete->hide();
@@ -359,8 +405,9 @@ void MainWindow::BeginLsn()
                     (labels+k)->clear(); // Убрать крестики, оставить только парты
             }
     m_player->play();
-    time->start();                    // Начать отсчет времени
-    timer2->start(100);
+    time->start();            // Начать отсчет времени
+    timer2->start(100);       // Запустить анимацию захода учителя в класс
+    labMinutes->show();labSeconds->show(); // Секундомер
 }
 
 void MainWindow::on_bDel_clicked()

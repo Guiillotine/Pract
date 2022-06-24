@@ -20,7 +20,6 @@ SOURCES += \
     human.cpp \
     main.cpp \
     mainwindow.cpp \
-    student.cpp \
     studentwin1.cpp \
     studentwin2.cpp
 
@@ -28,7 +27,6 @@ HEADERS += \
     classroom.h \
     human.h \
     mainwindow.h \
-    student.h \
     studentwin1.h \
     studentwin2.h
 

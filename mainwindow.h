@@ -23,8 +23,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-//ClassRoom *classRoom = new ClassRoom(); // Создание глобального объекта - классная комната
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,8 +36,8 @@ public:
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
-    //void EditClass(int row, int number); // Редактирование класса на экране: изменение парты с заданным рядом и номером
     void tcherGoes();  // Учитель идет
+    void Stopwatch();  // Секундомер
     void BeginLsn();   // Начать урок
     void DeleteAllDesks();// Удалить все парты
     void on_bDel_clicked();
@@ -48,7 +46,6 @@ private:
     Ui::MainWindow *ui;
     QMediaPlayer *m_player;
     QMediaPlaylist *m_playlist;
-    //ClassRoom classRoom;                // Классная комната
     ClassRoom *classRoom = new ClassRoom();                // Классная комната
     QIcon icon,blank;                   // Иконки
     QPixmap bkgndOp,bkgndCl;            // Задний фон с открытой и закрытой дверью
@@ -59,10 +56,11 @@ private:
     QPixmap desk1,desk2;                // Одноместная и двухместная парты
     QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
     QPalette palette;                   // Для установки заднего фона окна
-    QTimer *mainTimer,*timerDrag,*timer2;   // Таймеры
-    QTime  *time;                           // Время
-    QPoint *point1,*point2,*pointDel;       // Координаты центра некоторых label
-    QLabel *labels;                         //
+    QTimer *timer,*timerDrag,*timer2;   // Таймеры
+    QTime  *time;                       // Время
+    QPoint *point1,*point2,*pointDel;   // Координаты центра некоторых label
+    QLabel *labMinutes, *labSeconds;    // Под минуты и секунды таймера
+    QLabel *labels;                     //
     QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
     QLabel *labTcher;                                  // Учитель
     QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню

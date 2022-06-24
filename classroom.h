@@ -22,7 +22,7 @@ private:                                   // (ряд, номер парты в 
     {
     public:
         Student();
-        Student(QString fio,int health,int concentr,int humanit,int technical,int badGuy);
+        //Student(QString fio,int health,int concentr,int humanit,int technical,int badGuy);
         QString sex;  // Пол ученика
         int concentr; // Способность к концентрации
         int humanit;  // Склонность к гуманитарным наукам
@@ -32,20 +32,5 @@ private:                                   // (ряд, номер парты в 
     Student *students;  // Ученики в классе
 };
 
-//ClassRoom classR;
-
 #endif // CLASSROOM_H
-/*
-     class StudentGirl : public Student           // Внутренний класс - ученик
-    {
-    public:
-        StudentGirl();
-        int grlKoef;
-    };
-    class StudentBoy : public Student           // Внутренний класс - ученик
-    {
-    public:
-        StudentBoy();
-        int boyKoef;
-    };
-    Student *students;  // Ученики в классе*/
+

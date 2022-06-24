@@ -10,7 +10,7 @@ Student::Student()
     ruffian = 50;
 }
 
-Student::Student(QString fio, int health, int concentr, int humanit, int technical, int ruffian)
+/*Student::Student(QString fio, int health, int concentr, int humanit, int technical, int ruffian)
 {
     if (health < 0) health = 0; if (health > 99) health = 99;
     if (concentr < 0) concentr = 0; if (concentr > 99) concentr = 99;
@@ -23,4 +23,4 @@ Student::Student(QString fio, int health, int concentr, int humanit, int technic
     this->humanit = humanit;
     this->technical = technical;
     this-> ruffian = ruffian;
-}
+}*/

@@ -24,7 +24,7 @@ int ClassRoom::GetPlan(int row, int number)
 ClassRoom::Student::Student()
 {
     fio = "Ученик";
-    sex = " ";
+    sex = "";
     health = 100;
     concentr = 50;
     humanit = 50;
@@ -32,7 +32,7 @@ ClassRoom::Student::Student()
     ruffian = 0;
 }
 
-ClassRoom::Student::Student(QString fio, int health, int concentr, int humanit, int technical, int ruffian)
+/*ClassRoom::Student::Student(QString fio, int health, int concentr, int humanit, int technical, int ruffian)
 {
     if (health < 0) health = 0; if (health > 99) health = 99;
     if (concentr < 0) concentr = 0; if (concentr > 99) concentr = 99;
@@ -45,7 +45,7 @@ ClassRoom::Student::Student(QString fio, int health, int concentr, int humanit, 
     this->humanit = humanit;
     this->technical = technical;
     this-> ruffian = ruffian;
-}
+}*/
 
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
 {
