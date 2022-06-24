@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     icon.addFile(":/images/icon.ico");blank.addFile(":/images/Blank.ico");
     crossOn.load(":/images/crossGr.png");crossOff.load(":/images/cross.png");
     desk1.load(":/images/deskOne.png");desk2.load(":/images/desk.png");
+    deskGG.load(":/images/deskgg.png");deskBB.load(":/images/deskbb.png");deskGB.load(":/images/deskgb.png");deskBG.load(":/images/deskbg.png");
+    deskB.load(":/images/deskb.png");deskG.load(":/images/deskg.png");
     bkgndOp.load(":/images/classmOp.png"); bkgndCl.load(":/images/classCl.png");
     menu.load(":/images/classm.png");menu1.load(":/images/menu1.png");menu2.load(":/images/menu2.png");menuDel.load(":/images/delete.png");
     tcherSits.load(":/images/teatcherSits.png");
@@ -222,7 +224,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                         emit sig(classRoom,k);
                         studentWin1->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
                         studentWin1->exec();
-                        //labMenu1->setText(QString::number(classRoom->getStConcentr(k*2)));
+                        if (classRoom->getSex(k*2) == "Девочка") (labels+k)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
+                        else if (classRoom->getSex(k*2) == "Мальчик") (labels+k)->setPixmap(deskB);
                     }
                     else if (classRoom->GetPlan(i+1,j+1) == 2)
                     {
@@ -232,6 +235,10 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                         emit sig(classRoom,k);
                         studentWin2->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
                         studentWin2->exec();
+                        if ((classRoom->getSex(k*2) == "Девочка")&&((classRoom->getSex(k*2+1) == "Девочка"))) (labels+k)->setPixmap(deskGG);
+                        else if ((classRoom->getSex(k*2) == "Девочка")&&((classRoom->getSex(k*2+1) == "Мальчик"))) (labels+k)->setPixmap(deskGB);
+                        else if ((classRoom->getSex(k*2) == "Мальчик")&&((classRoom->getSex(k*2+1) == "Девочка"))) (labels+k)->setPixmap(deskBG);
+                        else if ((classRoom->getSex(k*2) == "Мальчик")&&((classRoom->getSex(k*2+1) == "Мальчик"))) (labels+k)->setPixmap(deskBB);
                     }
                 }
             }

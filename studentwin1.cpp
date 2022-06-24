@@ -7,6 +7,7 @@ StudentWin1::StudentWin1(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Добавление ученика");
+    blank.addFile(":/images/Blank.ico");
     icon.addFile(":/images/plus2.ico");
     setWindowIcon(icon);
     classR = new ClassRoom();
@@ -33,7 +34,8 @@ void StudentWin1::PrintToLabel(QSlider *slider, QLabel *lab)
 
 void StudentWin1::FillWin(ClassRoom *cr,int k)
 {
-    ui->lineEdit->setText(cr->getFio(k*2));
+    if (cr->getFio(k*2)=="Ученик") ui->lineEdit->setText("Ученик за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты
+    else ui->lineEdit->setText(cr->getFio(k*2));
     ui->cbSex->setCurrentText(cr->getSex(k*2));
     ui->SliderConcentr->setSliderPosition(cr->getStConcentr(k*2));
     ui->SliderHealth->setSliderPosition(cr->getStHealth(k*2));
@@ -56,6 +58,18 @@ void StudentWin1::on_bCancel_clicked()
 
 void StudentWin1::on_bOk_clicked()
 {
-    SetStudent(classR,deskNumber);// Заполнить параметры ученика
-    this->close();                // И закрыть форму
+    if ((ui->lineEdit->text()!="")&&(ui->cbSex->currentText()!=""))
+    {
+        SetStudent(classR,deskNumber);// Заполнить параметры ученика
+        this->close();                // И закрыть форму
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(" ");
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("Заполнены не все поля");
+        msgBox.setWindowIcon(blank);
+        msgBox.exec();
+    }
 }

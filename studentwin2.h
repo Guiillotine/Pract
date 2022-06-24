@@ -26,7 +26,7 @@ private slots:
     void on_bOk_clicked();
 private:
     Ui::studentwin2 *ui;
-    QIcon icon;
+    QIcon icon, blank;
     ClassRoom *classR;
     int deskNumber;
 };

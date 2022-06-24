@@ -57,6 +57,7 @@ private:
     QPixmap tcher1,tcher2,tcher3,tcher4,tcher5,tcher6; // Учитель - ходьба
     QPixmap tcherSits;                  // Учитель сидит
     QPixmap desk1,desk2;                // Одноместная и двухместная парты
+    QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
     QPalette palette;                   // Для установки заднего фона окна
     QTimer *mainTimer,*timerDrag,*timer2;   // Таймеры
     QTime  *time;                           // Время

@@ -23,7 +23,8 @@ int ClassRoom::GetPlan(int row, int number)
 
 ClassRoom::Student::Student()
 {
-    fio = "УЧЕНЫЦА";
+    fio = "Ученик";
+    sex = " ";
     health = 100;
     concentr = 50;
     humanit = 50;

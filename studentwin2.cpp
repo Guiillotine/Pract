@@ -7,6 +7,7 @@ studentwin2::studentwin2(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Добавление учеников");
+    blank.addFile(":/images/Blank.ico");
     icon.addFile(":/images/plus2.ico");
     setWindowIcon(icon);
     connect(ui->SliderConcentr, &QSlider::valueChanged, [=]() {PrintToLabel(ui->SliderConcentr,ui->label_6);});
@@ -37,14 +38,22 @@ void studentwin2::PrintToLabel(QSlider *slider, QLabel *lab)
 
 void studentwin2::FillWin(ClassRoom *cr, int k)
 {
-    ui->lineEdit->setText(cr->getFio(k*2));
+    if (cr->getFio(k*2)=="Ученик")
+    {
+        ui->lineEdit->setText("Ученик за партой " + QString::number(k+1) + "-1");   //Назвать ученика согласно номеру парты
+        ui->lineEdit_2->setText("Ученик за партой " + QString::number(k+1) + "-2"); //Назвать соседа согласно номеру парты
+    }
+    else
+    {
+        ui->lineEdit->setText(cr->getFio(k*2));
+        ui->lineEdit_2->setText(cr->getFio(k*2+1));
+    }
     ui->cbSex->setCurrentText(cr->getSex(k*2));
     ui->SliderConcentr->setSliderPosition(cr->getStConcentr(k*2));
     ui->SliderHealth->setSliderPosition(cr->getStHealth(k*2));
     ui->SliderHumanit->setSliderPosition(cr->getStHumanit(k*2));
     ui->SliderTechnical->setSliderPosition(cr->getStTechnical(k*2));
     ui->SliderBad->setSliderPosition(cr->getStRuffian(k*2));
-    ui->lineEdit_2->setText(cr->getFio(k*2+1));
     ui->cbSex_2->setCurrentText(cr->getSex(k*2+1));
     ui->SliderConcentr_2->setSliderPosition(cr->getStConcentr(k*2+1));
     ui->SliderHealth_2->setSliderPosition(cr->getStHealth(k*2+1));
@@ -68,6 +77,18 @@ void studentwin2::on_bCancel_clicked()
 
 void studentwin2::on_bOk_clicked()
 {
-    SetStudents(classR,deskNumber);  // Заполнить параметры ученика и его соседа
-    this->close();                   // И закрыть форму
+    if ((ui->lineEdit->text()!="")&&(ui->cbSex->currentText()!="")&&(ui->lineEdit_2->text()!="")&&(ui->cbSex_2->currentText()!=""))
+    {
+        SetStudents(classR,deskNumber);  // Заполнить параметры ученика и его соседа
+        this->close();                   // И закрыть форму
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(" ");
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("Заполнены не все поля");
+        msgBox.setWindowIcon(blank);
+        msgBox.exec();
+    }
 }

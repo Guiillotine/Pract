@@ -28,8 +28,6 @@
         <file>images/deskbg.png</file>
         <file>images/deskgb.png</file>
         <file>images/deskgg.png</file>
-        <file>images/deskOneb.png</file>
-        <file>images/deskOnegpsd.png</file>
         <file>images/menuCross.png</file>
         <file>images/delete.png</file>
         <file>images/icon.ico</file>
@@ -37,5 +35,7 @@
         <file>images/classmOp.png</file>
         <file>sounds/call.wav</file>
         <file>images/Blank.ico</file>
+        <file>images/deskg.png</file>
+        <file>images/deskb.png</file>
     </qresource>
 </RCC>

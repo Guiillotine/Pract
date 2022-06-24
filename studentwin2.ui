@@ -59,6 +59,11 @@
     </property>
     <item>
      <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
       <string>Мальчик</string>
      </property>
     </item>
@@ -334,6 +339,11 @@
       <height>22</height>
      </rect>
     </property>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
     <item>
      <property name="text">
       <string>Мальчик</string>
