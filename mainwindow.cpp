@@ -62,17 +62,11 @@ MainWindow::MainWindow(QWidget *parent)
         (labels+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
         (labels+k)->show();
     }
-    // Выделение памяти под символы-подсказки состояния учеников
+    // Выделение памяти под символы и текст, отображающие состояние учеников
     labSymbols = new QLabel[30];
-    /*for (int i = 0, j = 0, k = 0; k<15; i++, k++)
-    {
-        if (i == 3) {i = 0; j++;}
-        (labSymbols+k)->setParent(this);
-        //(labSymbols+k)->setPixmap(crossOff);
-        (labSymbols+k)->setGeometry(180+i*160,320+j*100,31,31);
-        (labSymbols+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
-        (labSymbols+k)->show();
-    }*/
+    labLearn = new QLabel[30];                // Усвоение урока учениками
+    labInterest = new QLabel[30];             // Интерес учеников
+    labDiscip = new QLabel[30];               // Дисциплина учеников
     // Счётчик кол-ва доступных для размещения парт
     labCounter = new QLabel(this);
     labCounter->setFont(QFont("Franklin Gothic Demi Cond", 20));
@@ -333,25 +327,62 @@ void MainWindow::ShowSymbols()
             if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
             {
                 (labSymbols+k)->setParent(this);
+                (labLearn+k)->setParent(this);
+                (labInterest+k)->setParent(this);
+                (labDiscip+k)->setParent(this);
                 // Смайлик в зависимости от склонности к нарушению дисциплины
-                if (classRoom->getStRuffian(k) > 70)(labSymbols+k)->setPixmap(statEvil);
+                /*if (classRoom->getStRuffian(k) > 70)(labSymbols+k)->setPixmap(statEvil);
                 else if (classRoom->getStRuffian(k) < 30) (labSymbols+k)->setPixmap(statKind);
-                else (labSymbols+k)->setPixmap(statNorm);
+                else*/
+                (labSymbols+k)->setPixmap(statNorm);
+                (labLearn+k)->setText("0%");
+                (labInterest+k)->setText("50%");
+                (labDiscip+k)->setText("50%");
                 (labSymbols+k)->setGeometry(142+i*160,315+j*100,wdth,hght);
-                (labSymbols+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
+                (labLearn+k)->setGeometry(162+i*160,315+j*100,60,9);
+                (labInterest+k)->setGeometry(162+i*160,328+j*100,60,9);
+                (labDiscip+k)->setGeometry(162+i*160,342+j*100,60,9);
+                (labLearn+k)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labInterest+k)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labDiscip+k)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labLearn+k)->setStyleSheet("QLabel {color: white;}");
+                (labInterest+k)->setStyleSheet("QLabel {color: white;}");
+                (labDiscip+k)->setStyleSheet("QLabel {color: white;}");
                 (labSymbols+k)->show();
+                (labLearn+k)->show();
+                (labInterest+k)->show();
+                (labDiscip+k)->show();
             }
             if (classRoom->GetPlan(i+1,j+1) == 2) // Если в плане двойная парта, то отобразить подсказку и для соседа
             {
                 (labSymbols+k+1)->setParent(this);
-                if (classRoom->getStRuffian(k+1) > 70)(labSymbols+k+1)->setPixmap(statEvil);
+                (labLearn+k+1)->setParent(this);
+                (labInterest+k+1)->setParent(this);
+                (labDiscip+k+1)->setParent(this);
+                /*if (classRoom->getStRuffian(k+1) > 70)(labSymbols+k+1)->setPixmap(statEvil);
                 else if (classRoom->getStRuffian(k+1) < 30) (labSymbols+k+1)->setPixmap(statKind);
-                else (labSymbols+k+1)->setPixmap(statNorm);
+                else*/
+                (labSymbols+k+1)->setPixmap(statNorm);
+                (labLearn+k+1)->setText("0%");
+                (labInterest+k+1)->setText("50%");
+                (labDiscip+k+1)->setText("50%");
                 (labSymbols+k+1)->setGeometry(142+i*160+55,315+j*100,wdth,hght);
-                (labSymbols+k+1)->installEventFilter(this); // Для перехвата событий для каждой из парт
+                (labLearn+k+1)->setGeometry(162+i*160+55,315+j*100,60,9);
+                (labInterest+k+1)->setGeometry(162+i*160+55,328+j*100,60,9);
+                (labDiscip+k+1)->setGeometry(162+i*160+55,342+j*100,60,9);
+                (labLearn+k+1)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labInterest+k+1)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labDiscip+k+1)->setFont(QFont("Franklin Gothic Demi Cond", 9));
+                (labLearn+k+1)->setStyleSheet("QLabel {color: white;}");
+                (labInterest+k+1)->setStyleSheet("QLabel {color: white;}");
+                (labDiscip+k+1)->setStyleSheet("QLabel {color: white;}");
                 (labSymbols+k+1)->show();
+                (labLearn+k+1)->show();
+                (labInterest+k+1)->show();
+                (labDiscip+k+1)->show();
             }
         }
+
 }
 
 // Учитель заходит в класс

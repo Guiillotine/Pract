@@ -64,6 +64,9 @@ private:
     QLabel *labMinutes, *labSeconds;    // Под минуты и секунды таймера
     QLabel *labels;                     // Все парты
     QLabel *labSymbols;                 // Символы-подсказки состояния ученика
+    QLabel *labLearn;                   // Усвоение урока учениками
+    QLabel *labInterest;                // Интерес учеников
+    QLabel *labDiscip;                  // Дисциплина учеников
     QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
     QLabel *labTcher;                                  // Учитель
     QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню
