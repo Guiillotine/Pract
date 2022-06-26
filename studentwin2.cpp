@@ -36,6 +36,7 @@ void studentwin2::PrintToLabel(QSlider *slider, QLabel *lab)
     lab->setText(QString::number(slider->value()));
 }
 
+
 void studentwin2::FillWin(ClassRoom *cr, int k)
 {
     if (cr->getFio(k*2)=="Ученик")

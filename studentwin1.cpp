@@ -32,6 +32,7 @@ void StudentWin1::PrintToLabel(QSlider *slider, QLabel *lab)
     lab->setText(QString::number(slider->value()));
 }
 
+
 void StudentWin1::FillWin(ClassRoom *cr,int k)
 {
     if (cr->getFio(k*2)=="Ученик") ui->lineEdit->setText("Ученик за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты

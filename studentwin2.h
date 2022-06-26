@@ -17,7 +17,7 @@ class studentwin2 : public QDialog
 public:
     explicit studentwin2(QWidget *parent = nullptr);
     ~studentwin2();
-    void PrintToLabel(QSlider *slider,QLabel *lab);  // Вывести значение слайдера в label
+    void PrintToLabel(QSlider *slider,QLabel *lab); // Вывести значение слайдера в label
 public slots:
     void FillWin(ClassRoom *cr,int k);              // Заполнить окно данными ученика
     void SetStudents(ClassRoom *cr,int k);          // Заполнить поля двух учеников данными из окна

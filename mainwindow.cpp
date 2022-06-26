@@ -9,9 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->bCont->hide();
     timer = new QTimer(this);                                      // Секундомер для засечения времени урока
-    timerDrag = new QTimer(this);                                  // Таймер для замера времени от одного нажатия клавиши до следующего
+    timerHints = new QTimer(this);                                  // Для смены содержимого подсказок
+    timerDrag = new QTimer(this);                                   // Таймер для замера времени от одного нажатия клавиши до следующего
     timer2 = new QTimer(this);                                     // Таймер для анимации перед началом урока (учитель входит в класс)
     connect(timer, SIGNAL(timeout()),this, SLOT(Stopwatch()));  // Связать таймер со слотом - секундомером
+    connect(timerHints, SIGNAL(timeout()),this, SLOT(ChangeHints()));  // Связать таймер со слотом
     connect(timer2, SIGNAL(timeout()),this, SLOT(tcherGoes()));  // Связать таймер 2 со слотом
     time = new QTime(0,0,0);
     //************Картинки*************
@@ -317,7 +319,7 @@ void MainWindow::AddToCounter(int a)
 }
 
 // Показать символы-подсказки напротив каждого из учеников
-void MainWindow::ShowSymbols()
+void MainWindow::ShowHints()
 {
     int wdth, hght;
     wdth = statNorm.width();hght = statNorm.height();
@@ -382,7 +384,35 @@ void MainWindow::ShowSymbols()
                 (labDiscip+k+1)->show();
             }
         }
+}
 
+// Изменение значения показателей деят-ности ученика в подсказках
+void MainWindow::ChangeHints()
+{
+    for (int i = 0, j = 0, k = 0; k < 30; i++, k+=2)
+            {
+                if (i == 3) {i = 0; j++;}
+                if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
+                {
+                    int dis = rand() % 100;
+                    (labLearn+k)->setText(QString::number(rand() % 100));
+                    (labInterest+k)->setText(QString::number(rand() % 100));
+                    (labDiscip+k)->setText(QString::number(dis));
+                    if (dis>70) (labSymbols+k)->setPixmap(statEvil);
+                    else if (dis < 30) (labSymbols+k)->setPixmap(statKind);
+                    else (labSymbols+k)->setPixmap(statNorm);
+                }
+                if (classRoom->GetPlan(i+1,j+1) == 2)
+                {
+                    int dis = rand() % 100;
+                    (labLearn+k+1)->setText(QString::number(rand() % 100));
+                    (labInterest+k+1)->setText(QString::number(rand() % 100));
+                    (labDiscip+k+1)->setText(QString::number(dis));
+                    if (dis>70) (labSymbols+k+1)->setPixmap(statEvil);
+                    else if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
+                    else (labSymbols+k+1)->setPixmap(statNorm);
+                }
+            }
 }
 
 // Учитель заходит в класс
@@ -429,6 +459,8 @@ if(f)
         labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
         timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране
         timer->start(125);// Запустить секундомер
+        ShowHints();
+        timerHints->start(1250);
     }
 }
 }
@@ -448,6 +480,7 @@ void MainWindow::Stopwatch()
     else labSeconds->setText(":"+QString::number(sec));
     if (min == 40) timer->stop();
 }
+
 
 void MainWindow::BeginLsn()
 {  //Проверка: начать урок только если параметры указаны для всех учеников
@@ -483,7 +516,6 @@ void MainWindow::BeginLsn()
     time->start();            // Начать отсчет времени
     timer2->start(100);       // Запустить анимацию захода учителя в класс
     labMinutes->show();labSeconds->show(); // Секундомер
-    ShowSymbols();
 }
 
 void MainWindow::on_bDel_clicked()

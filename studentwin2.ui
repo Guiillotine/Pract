@@ -272,9 +272,9 @@
   <widget class="QPushButton" name="bOk">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>480</x>
      <y>520</y>
-     <width>41</width>
+     <width>61</width>
      <height>23</height>
     </rect>
    </property>
@@ -550,6 +550,58 @@
      <string>0</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="bCopy">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>520</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Копировать</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bPaste">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>520</y>
+     <width>61</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Вставить</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bCopy_2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>520</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Копировать</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bPaste_2">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>520</y>
+     <width>61</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Вставить</string>
+   </property>
   </widget>
  </widget>
  <resources/>
