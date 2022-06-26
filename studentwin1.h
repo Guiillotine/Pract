@@ -24,6 +24,9 @@ public slots:
 private slots:
     void on_bCancel_clicked();
     void on_bOk_clicked();
+    void on_bCopy_clicked();
+    void on_bPaste_clicked();
+
 private:
     Ui::StudentWin1 *ui;
     QIcon icon, blank;

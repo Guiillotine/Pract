@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
         (labels+k)->show();
     }
     // Выделение памяти под символы и текст, отображающие состояние учеников
-    labSymbols = new QLabel[30];
+    labSymbols = new QLabel[30];              // Символы - подсказки
     labLearn = new QLabel[30];                // Усвоение урока учениками
     labInterest = new QLabel[30];             // Интерес учеников
     labDiscip = new QLabel[30];               // Дисциплина учеников
@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     labCounter->setText("x15");
     // Значок удаления в меню
     labDelete = new QLabel(this);
-    labDelete->installEventFilter(this);                // Для перехвата событий для labDelete
+    labDelete->installEventFilter(this);               // Для перехвата событий для labDelete
     labDelete->setPixmap(menuDel);
     labDelete->setGeometry(800,150,menuDel.width(),menuDel.height());
     // Варианты парт в меню - одноместная и двухместная
@@ -250,6 +250,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                         studentWin1->exec();
                         if (classRoom->getSex(k*2) == "Девочка") (labels+k)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
                         else if (classRoom->getSex(k*2) == "Мальчик") (labels+k)->setPixmap(deskB);
+                        // Проверить так же пол ученика с номером из буфера (обновить картинку на случай, если поменялись местами)
+                        if (classRoom->getBuffStNum()!= -1)
+                        {
+                            if (classRoom->getSex(classRoom->getBuffStNum()) == "Девочка") (labels+(classRoom->getBuffStNum())/2)->setPixmap(deskG);
+                            else if (classRoom->getSex(classRoom->getBuffStNum()) == "Мальчик") (labels+(classRoom->getBuffStNum())/2)->setPixmap(deskB);
+                        }
                     }
                     else if (classRoom->GetPlan(i+1,j+1) == 2)
                     {

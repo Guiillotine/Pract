@@ -2,7 +2,8 @@
 
 ClassRoom::ClassRoom()
 {
-    students = new Student[30]; // Максимально возможное количество учеников - 30
+    students = new Student[31]; // Максимально возможное количество учеников - 30, +1 - буфер для пересадки
+    BuffStNum = -1; // Номер ученика при пересадке
 }
 
 void ClassRoom::EditPlan(int row, int number, int value)
@@ -32,21 +33,6 @@ ClassRoom::Student::Student()
     ruffian = 0;
 }
 
-/*ClassRoom::Student::Student(QString fio, int health, int concentr, int humanit, int technical, int ruffian)
-{
-    if (health < 0) health = 0; if (health > 99) health = 99;
-    if (concentr < 0) concentr = 0; if (concentr > 99) concentr = 99;
-    if (humanit < 0) humanit = 0; if (humanit > 99) humanit = 99;
-    if (technical < 0) technical = 0; if (technical > 99) technical = 99;
-    if (ruffian < 0) ruffian = 0; if (ruffian > 99) ruffian = 99;
-    this->fio = fio;
-    this->health = health;
-    this->concentr = concentr;
-    this->humanit = humanit;
-    this->technical = technical;
-    this-> ruffian = ruffian;
-}*/
-
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
 {
     if (health < 0) health = 0; if (health > 99) health = 99;
@@ -61,6 +47,27 @@ void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, in
     (students+numberSt)->humanit = humanit;
     (students+numberSt)->technical = technical;
     (students+numberSt)-> ruffian = ruffian;
+}
+
+void ClassRoom::CopySt(int numberSt) // Скопировать данные указанного ученика в конец массива учеников (буфер)
+{
+    setStudent(30, getFio(numberSt), getSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+    BuffStNum = numberSt;
+}
+
+void ClassRoom::PasteSt(int numberSt) // Скопировать данные из конца массива учеников (буфера) в указанного ученика
+{
+    if (getSex(numberSt)!="")
+    {
+        ClassRoom tmp;
+        // Копировать данные ученика, на место которого совершена вставка из буфера
+        tmp.setStudent(0, getFio(numberSt), getSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+        // Вставка из буффера
+        setStudent(numberSt, getFio(30), getSex(30), getStHealth(30), getStConcentr(30), getStHumanit(30), getStTechnical(30), getStRuffian(30));
+        // Вставка из временного объекта на место, с которого было совершено копирование
+        setStudent(getBuffStNum(), tmp.getFio(0), tmp.getSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
+        setStudent(30,getFio(30),"",0,0,0,0,0); // Очистить буфер
+    }
 }
 
 QString ClassRoom::getFio(int numberSt)
@@ -96,4 +103,9 @@ int ClassRoom::getStRuffian(int numberSt)
 int ClassRoom::getStHealth(int numberSt)
 {
     return (students+numberSt)->health;
+}
+
+int ClassRoom::getBuffStNum()
+{
+    return BuffStNum;
 }

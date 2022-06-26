@@ -11,13 +11,17 @@ public:
     void setStudent(int numberSt, QString fio,QString sex,int health,int concentr,int humanit,int technical,int badGuy);
     QString getFio(int numberSt);
     QString getSex(int numberSt);
+    void CopySt(int numberSt); // Скопировать данные указанного ученика в конец массива учеников (буфер)
+    void PasteSt(int numberSt);// Скопировать данные из конца массива учеников (буфера) в указанного ученика
     int getStConcentr(int numberSt);
     int getStHumanit(int numberSt);
     int getStTechnical(int numberSt);
     int getStRuffian(int numberSt);
     int getStHealth(int numberSt);
+    int getBuffStNum();
 private:                                   // (ряд, номер парты в нём, вид парты 0-нет,1-одномест.,2-двухмест.)
     int plan[5][3] = {0};                  // План расположения парт в классе
+    int BuffStNum;                         // Буфер для номера ученика при пересадке
     class Student : public Human           // Внутренний класс - ученик
     {
     public:
