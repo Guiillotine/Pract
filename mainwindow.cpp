@@ -241,34 +241,33 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 if((watched == labels+k)&&(event->type() == QEvent::MouseButtonDblClick)&&(classRoom->GetPlan(i+1,j+1) != 0))
                 {
                     if (classRoom->GetPlan(i+1,j+1) == 1)
-                    {
+                    {  // Окрыть окно ввода данных ученика для одноместной парты
                         StudentWin1 *studentWin1 = new StudentWin1();
                         disconnect(this, &MainWindow::sig, nullptr, nullptr);              // Оборвать предыдущие связи сигнала
                         connect(this, &MainWindow::sig,studentWin1, &StudentWin1::FillWin);// Связать сигнал с новым слотом
                         emit sig(classRoom,k);
                         studentWin1->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
                         studentWin1->exec();
-                        if (classRoom->getSex(k*2) == "Девочка") (labels+k)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
-                        else if (classRoom->getSex(k*2) == "Мальчик") (labels+k)->setPixmap(deskB);
-                        // Проверить так же пол ученика с номером из буфера (обновить картинку на случай, если поменялись местами)
-                        if (classRoom->getBuffStNum()!= -1)
-                        {
-                            if (classRoom->getSex(classRoom->getBuffStNum()) == "Девочка") (labels+(classRoom->getBuffStNum())/2)->setPixmap(deskG);
-                            else if (classRoom->getSex(classRoom->getBuffStNum()) == "Мальчик") (labels+(classRoom->getBuffStNum())/2)->setPixmap(deskB);
-                        }
+                        Show1deskLab(k);
                     }
                     else if (classRoom->GetPlan(i+1,j+1) == 2)
-                    {
+                    {  // Окрыть окно ввода данных ученика для двухместной парты
                         studentwin2 *studentWin2 = new studentwin2();
                         disconnect(this, &MainWindow::sig, nullptr, nullptr);              // Оборвать предыдущие связи сигнала
                         connect(this, &MainWindow::sig,studentWin2, &studentwin2::FillWin);// Связать сигнал с новым слотом
                         emit sig(classRoom,k);
                         studentWin2->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
                         studentWin2->exec();
-                        if ((classRoom->getSex(k*2) == "Девочка")&&((classRoom->getSex(k*2+1) == "Девочка"))) (labels+k)->setPixmap(deskGG);
-                        else if ((classRoom->getSex(k*2) == "Девочка")&&((classRoom->getSex(k*2+1) == "Мальчик"))) (labels+k)->setPixmap(deskGB);
-                        else if ((classRoom->getSex(k*2) == "Мальчик")&&((classRoom->getSex(k*2+1) == "Девочка"))) (labels+k)->setPixmap(deskBG);
-                        else if ((classRoom->getSex(k*2) == "Мальчик")&&((classRoom->getSex(k*2+1) == "Мальчик"))) (labels+k)->setPixmap(deskBB);
+                        Show2deskLab(k);
+                    }
+                    if((classRoom->GetPlan(i+1,j+1) != 0)&&(classRoom->getBuffStNum()!= -1))
+                    {
+                        // Проверить пол ученика с номером из буфера (обновить картинку на случай, если уч. поменялись местами)
+                        int buffStNum = classRoom->getBuffStNum();// Номер ученика из буффера
+                        if (classRoom->GetPlan((buffStNum/2)%3+1,(buffStNum/6)+1) == 1)// В буф-ре есть д-е ученика и он сидел за одномест.п.
+                            Show1deskLab(buffStNum/2);
+                        else if (classRoom->GetPlan((buffStNum/2)%3+1,(buffStNum/6)+1) == 2)// Если за двухместной
+                            Show2deskLab(buffStNum/2);
                     }
                 }
             }
@@ -389,7 +388,21 @@ void MainWindow::ShowHints()
                 (labInterest+k+1)->show();
                 (labDiscip+k+1)->show();
             }
-        }
+    }
+}
+
+void MainWindow::Show1deskLab(int deskNum)
+{
+    if (classRoom->getSex(deskNum*2) == "Девочка") (labels+deskNum)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
+    else if (classRoom->getSex(deskNum*2) == "Мальчик") (labels+deskNum)->setPixmap(deskB);
+}
+
+void MainWindow::Show2deskLab(int deskNum)
+{
+    if ((classRoom->getSex(deskNum*2) == "Девочка")&&((classRoom->getSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskGG);
+    else if ((classRoom->getSex(deskNum*2) == "Девочка")&&((classRoom->getSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskGB);
+    else if ((classRoom->getSex(deskNum*2) == "Мальчик")&&((classRoom->getSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
+    else if ((classRoom->getSex(deskNum*2) == "Мальчик")&&((classRoom->getSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
 }
 
 // Изменение значения показателей деят-ности ученика в подсказках

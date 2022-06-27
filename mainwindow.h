@@ -33,7 +33,9 @@ public:
     void EditClass(int row, int number); // Редактирование класса на экране: изменение парты с заданным рядом и номером
     void Dragging(QLabel *lab, QPoint *point);  // Перетаскивание мышью парты lab за место с координатами point
     void AddToCounter(int a);                   // Добавить к счётчику доступных для размещения парт a
-    void ShowHints();                         // Показать символы-подсказки состояния учеников на экране
+    void ShowHints();                           // Показать символы-подсказки состояния учеников на экране
+    void Show1deskLab(int deskNum); // Показать одноместную парту
+    void Show2deskLab(int deskNum); // Показать двухместную парту
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
