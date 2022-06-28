@@ -13,6 +13,7 @@
 #include <QMediaPlayer>         // Плееры для воспроизведения звука
 #include <QMediaPlayList>       // Для звука
 #include "classroom.h"          // Класс "Классная комната"
+#include "teatcherwin.h"       // Окно для заполнения данных учителя
 #include "studentwin1.h"        // Окно для заполнения одного ученика
 #include "studentwin2.h"        // Окно для заполнения двух учеников
 #include "human.h"              // Класс "Человек"
@@ -39,10 +40,11 @@ public:
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
-    void tcherGoes();  // Учитель идет
-    void Stopwatch();  // Секундомер
-    void ChangeHints();// Менять значение подсказок
-    void BeginLsn();   // Начать урок
+    void Stopwatch();     // Секундомер
+    void ChangeHints();   // Менять значение подсказок
+    void BfrLsn();        // Вид экрана до начала урока
+    void BeginLsn();      // Начать урок
+    void tcherGoes();     // Учитель идет
     void DeleteAllDesks();// Удалить все парты
     void on_bDel_clicked();
     void on_bExit_clicked();
@@ -56,15 +58,15 @@ private:
     QPixmap menu,menu1,menu2,menuDel;   // Меню редактирования класса, элементы меню
     QPixmap crossOff,crossOn;           // Крестик неактивен, активен
     QPixmap tcher1,tcher2,tcher3,tcher4,tcher5,tcher6; // Учитель - ходьба
-    QPixmap tcherSits;                  // Учитель сидит
+    QPixmap tcherSits,tcherMenu;        // Учитель сидит
     QPixmap desk1,desk2;                // Одноместная и двухместная парты
     QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
     QPixmap statKind,statNorm,statEvil; // Символические картинки - подсказки состояния ученика
     QPalette palette;                   // Для установки заднего фона окна
-    QTimer *timer,*timerDrag,*timer2,*timerHints;   // Таймеры
+    QTimer *timer,*timerDrag,*timer2,*timerHints;// Таймеры
     QTime  *time;                       // Время
     QPoint *point1,*point2,*pointDel;   // Координаты центра некоторых label
-    QLabel *labMinutes, *labSeconds;    // Под минуты и секунды таймера
+    QLabel *labMinutes, *labSeconds, *labStWtch; // Под минуты, секунды секундомера и надпись
     QLabel *labels;                     // Все парты
     QLabel *labSymbols;                 // Символы-подсказки состояния ученика
     QLabel *labLearn;                   // Усвоение урока учениками
@@ -72,10 +74,12 @@ private:
     QLabel *labDiscip;                  // Дисциплина учеников
     QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
     QLabel *labTcher;                                  // Учитель
-    QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню
+    QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
+    QPushButton *bEdit,*bFinLsn;                       // Кнопки меню во время урока
     QComboBox *cmbbox;
 signals:
     void sig(ClassRoom*,int);
+    void sigTcher(ClassRoom*);
 
 };
 #endif // MAINWINDOW_H

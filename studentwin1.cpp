@@ -6,9 +6,9 @@ StudentWin1::StudentWin1(QWidget *parent) :
     ui(new Ui::StudentWin1)
 {
     ui->setupUi(this);
-    setWindowTitle("Добавление ученика");
+    setWindowTitle("Характеристики ученика");
     blank.addFile(":/images/Blank.ico");
-    icon.addFile(":/images/plus2.ico");
+    icon.addFile(":/images/pupils.ico");
     setWindowIcon(icon);
     ui->label->setAlignment(Qt::AlignCenter); // Выравнивание текста по центру
     classR = new ClassRoom();
@@ -36,9 +36,9 @@ void StudentWin1::PrintToLabel(QSlider *slider, QLabel *lab)
 
 void StudentWin1::FillWin(ClassRoom *cr,int k)
 {
-    if (cr->getFio(k*2)=="Ученик") ui->lineEdit->setText("Уч. за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты
-    else ui->lineEdit->setText(cr->getFio(k*2));
-    ui->cbSex->setCurrentText(cr->getSex(k*2));
+    if (cr->getStFio(k*2)=="Ученик") ui->lineEdit->setText("Уч. за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты
+    else ui->lineEdit->setText(cr->getStFio(k*2));
+    ui->cbSex->setCurrentText(cr->getStSex(k*2));
     ui->SliderConcentr->setSliderPosition(cr->getStConcentr(k*2));
     ui->SliderHealth->setSliderPosition(cr->getStHealth(k*2));
     ui->SliderHumanit->setSliderPosition(cr->getStHumanit(k*2));
@@ -46,10 +46,10 @@ void StudentWin1::FillWin(ClassRoom *cr,int k)
     ui->SliderBad->setSliderPosition(cr->getStRuffian(k*2));
     classR = cr; // Запомнить адрес объекта
     deskNumber = k; // Запомнить номер выбранной парты
-    if (cr->getSex(30) != "") // Перемещаемый ученик
+    if (cr->getStSex(30) != "") // Перемещаемый ученик
     {
-        if (cr->getSex(30) == "Девочка") ui->label->setText(cr->getFio(30) + " выбрана для перемещения");
-        else ui->label->setText(cr->getFio(30) + " выбран для перемещения");
+        if (cr->getStSex(30) == "Девочка") ui->label->setText(cr->getStFio(30) + " выбрана для перемещения");
+        else ui->label->setText(cr->getStFio(30) + " выбран для перемещения");
     }
 }
 
@@ -83,20 +83,20 @@ void StudentWin1::on_bOk_clicked()
 
 void StudentWin1::on_bCopy_clicked()
 {
-    if (classR->getSex(deskNumber*2)!= "")
+    if (classR->getStSex(deskNumber*2)!= "")
     {
         classR->CopySt(deskNumber*2);// Копировать
-        if (classR->getSex(deskNumber*2) == "Девочка") ui->label->setText(classR->getFio(deskNumber*2) + " выбрана для перемещения");
-        else ui->label->setText(classR->getFio(deskNumber*2) + " выбран для перемещения");
+        if (classR->getStSex(deskNumber*2) == "Девочка") ui->label->setText(classR->getStFio(deskNumber*2) + " выбрана для перемещения");
+        else ui->label->setText(classR->getStFio(deskNumber*2) + " выбран для перемещения");
     }
 }
 
 void StudentWin1::on_bPaste_clicked()
 {
-    if ((classR->getSex(30)!= "")&&(classR->getSex(deskNumber*2)!= "")) // Если буфер не пуст и есть, с кем меняться
+    if ((classR->getStSex(30)!= "")&&(classR->getStSex(deskNumber*2)!= "")) // Если буфер не пуст и есть, с кем меняться
     {
         classR->PasteSt(deskNumber*2);// Вставить
         FillWin(classR,deskNumber); // Заполнить окно новыми данными
-        ui->label->setText(classR->getFio(classR->getBuffStNum()) + " и " + classR->getFio(30) + " поменялись местами");
+        ui->label->setText(classR->getStFio(classR->getBuffStNum()) + " и " + classR->getStFio(30) + " поменялись местами");
     }
 }

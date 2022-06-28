@@ -3,9 +3,7 @@
 Human::Human()
 {
     fio = "";
+    health = 99;
 }
 
-/*int Human::GetHealth()
-{
-    return health;
-}*/
+

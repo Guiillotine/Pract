@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     deskB.load(":/images/deskb.png");deskG.load(":/images/deskg.png");
     bkgndOp.load(":/images/classmOp.png"); bkgndCl.load(":/images/classCl.png");
     menu.load(":/images/classm.png");menu1.load(":/images/menu1.png");menu2.load(":/images/menu2.png");menuDel.load(":/images/delete.png");
-    tcherSits.load(":/images/teatcherSits.png");
+    tcherSits.load(":/images/teatcherSits.png");tcherMenu.load(":/images/teatcherMenu.png");
     tcher1.load(":/images/teatcher3-1.png");tcher2.load(":/images/teatcher3-2.png");tcher3.load(":/images/teatcher3-3.png");
     tcher4.load(":/images/teatcher3-4.png");tcher5.load(":/images/teatcher3-5.png");tcher6.load(":/images/teatcher3-6.png");
     statKind.load(":/images/statKind.png");statNorm.load(":/images/statNorm.png");statEvil.load(":/images/statEvil.png");
@@ -34,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_playlist = new QMediaPlaylist(this);
     m_player->setPlaylist(m_playlist);
     m_playlist->addMedia(QUrl("call2.wav"));
-    //m_playlist->addMedia(QUrl("qrc:/sounds/call.wav"));
-    //m_playlist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
     //
     scrollArea = new QScrollArea();                    // Полосы прокрутки при уменьшении размеров окна
     scrollArea->setWindowIcon(icon);
@@ -50,16 +48,16 @@ MainWindow::MainWindow(QWidget *parent)
     //*************Labels***************
     // Учитель
     labTcher = new QLabel(this);
-    labTcher->setPixmap(tcher1);
-    labTcher->setGeometry(590,150,tcher1.width(),tcher1.height());
-    labTcher->hide();
+    //labTcher->setPixmap(tcherMenu);
+    //labTcher->setGeometry(342,155,tcherMenu.width(),tcherMenu.height());
+    labTcher->installEventFilter(this); // Для перехвата событий для label учителя
     // Заполнение класса местами для парт
     labels = new QLabel[15];     // Места для парт
     for (int i = 0, j = 0, k = 0; k<15; i++, k++)
     {
         if (i == 3) {i = 0; j++;}
         (labels+k)->setParent(this);
-        (labels+k)->setPixmap(crossOff);      // Изначально на месте парты - крестик
+        //(labels+k)->setPixmap(crossOff);      // Изначально на месте парты - крестик
         (labels+k)->setGeometry(180+i*160,320+j*100,31,31);
         (labels+k)->installEventFilter(this); // Для перехвата событий для каждой из парт
         (labels+k)->show();
@@ -91,22 +89,28 @@ MainWindow::MainWindow(QWidget *parent)
     labMenu2->setGeometry(750,270,menu2.width(),menu2.height());
     // Секундомер
     labMinutes = new QLabel(this);
-    labMinutes->setGeometry(802,10,80,40);
+    labMinutes->setGeometry(802,40,80,40);
     labMinutes->setFont(QFont("Franklin Gothic Demi Cond", 20));
     labMinutes->setStyleSheet("QLabel {color: #ddc6af;}");
     labMinutes->setText("00");
-    labMinutes->hide();
+    //labMinutes->hide();
     labSeconds = new QLabel(this);
-    labSeconds->setGeometry(830,10,80,40);
+    labSeconds->setGeometry(830,40,80,40);
     labSeconds->setFont(QFont("Franklin Gothic Demi Cond", 20));
     labSeconds->setStyleSheet("QLabel {color: #ddc6af;}");
     labSeconds->setText(":00");
-    labSeconds->hide();
+    //labSeconds->hide();
+    labStWtch = new QLabel(this);
+    labStWtch->setGeometry(783,10,250,40);
+    labStWtch->setFont(QFont("Franklin Gothic Demi Cond", 20));
+    labStWtch->setStyleSheet("QLabel {color: #ddc6af;}");
+    labStWtch->setText("Урок идёт");
+    //labStWtch->hide();
     //*********************************
     // Выпадающий список с предметами
     cmbbox = new QComboBox(this);
     cmbbox->setGeometry(765,6,135,20);
-    cmbbox->addItem("Математика");cmbbox->addItem("Русский");cmbbox->addItem("История");cmbbox->addItem("Химия");
+    cmbbox->addItem("Математика");cmbbox->addItem("Русский");cmbbox->addItem("История");cmbbox->addItem("География");
     //************Buttons**************
     // Начать урок
     bCont = new QPushButton(this);
@@ -114,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent)
     bCont->setFont(QFont("Franklin Gothic Demi Cond", 20));      // Установить шрифт кнопки
     bCont->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bCont->setText("Начать урок");
-    bCont->show();
+    //bCont->show();
     connect(bCont, SIGNAL (clicked()),this, SLOT (BeginLsn()));
     // Удалить все парты
     bDel = new QPushButton(this);
@@ -122,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
     bDel->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
     bDel->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bDel->setText("Сброс");
-    bDel->show();
+    //bDel->show();
     connect(bDel, SIGNAL (clicked()),this, SLOT (on_bDel_clicked()));
     // Выход
     bExit = new QPushButton(this);
@@ -130,8 +134,26 @@ MainWindow::MainWindow(QWidget *parent)
     bExit->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
     bExit->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bExit->setText("Выход");
-    bExit->show();
+    //bExit->show();
     connect(bExit, SIGNAL (clicked()),this, SLOT (on_bExit_clicked()));
+    // Редактировать
+    bEdit = new QPushButton(this);
+    bEdit->setGeometry(720,796,221,65);                    // Размер и расположение кнопки
+    bEdit->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
+    bEdit->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
+    bEdit->setText("Редактировать");
+    //bEdit->show();
+    //connect(bDel, SIGNAL (clicked()),this, SLOT (on_bDel_clicked()));
+    // Закончить урок
+    bFinLsn = new QPushButton(this);
+    bFinLsn->setGeometry(720,862,221,65);                    // Размер и расположение кнопки
+    bFinLsn->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
+    bFinLsn->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
+    bFinLsn->setText("Закончить урок");
+    //bFinLsn->show();
+    connect(bFinLsn, SIGNAL (clicked()),this, SLOT (BfrLsn()));
+    // Вид экрана до начала урока
+    BfrLsn();
 }
 
 MainWindow::~MainWindow()
@@ -234,6 +256,15 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 labMenu2->setGeometry(750,270,menu2.width(),menu2.height());
             }
         }
+
+    if((watched == labTcher)&&(event->type() == QEvent::MouseButtonDblClick))
+    {// Окрыть окно ввода данных ученика для одноместной парты
+          TeatcherWin *tchrWin = new TeatcherWin();
+          connect(this, &MainWindow::sigTcher,tchrWin, &TeatcherWin::FillWin);
+          emit sigTcher(classRoom);
+          tchrWin->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
+          tchrWin->exec();
+    }
 
     for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
             {
@@ -393,16 +424,16 @@ void MainWindow::ShowHints()
 
 void MainWindow::Show1deskLab(int deskNum)
 {
-    if (classRoom->getSex(deskNum*2) == "Девочка") (labels+deskNum)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
-    else if (classRoom->getSex(deskNum*2) == "Мальчик") (labels+deskNum)->setPixmap(deskB);
+    if (classRoom->getStSex(deskNum*2) == "Девочка") (labels+deskNum)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
+    else if (classRoom->getStSex(deskNum*2) == "Мальчик") (labels+deskNum)->setPixmap(deskB);
 }
 
 void MainWindow::Show2deskLab(int deskNum)
 {
-    if ((classRoom->getSex(deskNum*2) == "Девочка")&&((classRoom->getSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskGG);
-    else if ((classRoom->getSex(deskNum*2) == "Девочка")&&((classRoom->getSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskGB);
-    else if ((classRoom->getSex(deskNum*2) == "Мальчик")&&((classRoom->getSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
-    else if ((classRoom->getSex(deskNum*2) == "Мальчик")&&((classRoom->getSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
+    if ((classRoom->getStSex(deskNum*2) == "Девочка")&&((classRoom->getStSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskGG);
+    else if ((classRoom->getStSex(deskNum*2) == "Девочка")&&((classRoom->getStSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskGB);
+    else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
+    else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
 }
 
 // Изменение значения показателей деят-ности ученика в подсказках
@@ -431,19 +462,122 @@ void MainWindow::ChangeHints()
                     else if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
                     else (labSymbols+k+1)->setPixmap(statNorm);
                 }
+    }
+}
+
+void MainWindow::Stopwatch()
+{
+    static int min = 0,sec = 0;
+    sec = ((labSeconds->text()).remove(0,1)).toInt();
+    min = (labMinutes->text()).toInt();
+    sec++;
+    if (sec == 60)
+    {
+        min++;
+        sec = 0;
+    }
+    if (min < 10) labMinutes->setText("0" + QString::number(min));
+    else labMinutes->setText(QString::number(min));
+    if (sec < 10) labSeconds->setText(":0"+QString::number(sec));
+    else labSeconds->setText(":"+QString::number(sec));
+    if (min == 40) timer->stop();
+}
+
+// Вид экрана до начала урока
+void MainWindow::BfrLsn()
+{
+    labMenu1->show();
+    labMenu2->show();
+    labDelete->show();
+    labCounter->show();
+    cmbbox->show();
+    bCont->show();
+    bDel->show();
+    bExit->show();
+    bFinLsn->hide();
+    bEdit->hide();
+    bFinLsn->setEnabled(false); // До начала урока кнопки недоступны
+    bEdit->setEnabled(false);
+    labMinutes->hide();
+    labSeconds->hide();
+    labStWtch->hide();
+    labMinutes->setText("00");
+    labSeconds->setText(":00");
+    timer->stop();     // Остановить секундомер
+    timerHints->stop();// Остановить изменение текста в подсказках
+    // Картинки в меню
+    labDelete->show();
+    labMenu1->show();
+    labMenu2->show();
+    // Учитель
+    labTcher->setPixmap(tcherMenu);
+    labTcher->setGeometry(343,157,tcherMenu.width(),tcherMenu.height());
+    // Спрятать подсказки
+    for (int i = 0, j = 0, k = 0; k<30; i++, k+=1)
+        {
+            if (i == 3) {i = 0; j++;}
+            (labSymbols+k)->hide();
+            (labLearn+k)->hide();
+            (labInterest+k)->hide();
+            (labDiscip+k)->hide();
+        }
+    // Парты
+    for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
+            {
+                if (i == 3) {i = 0; j++;}
+                if (classRoom->GetPlan(i+1,j+1) == 0)
+                    (labels+k)->setPixmap(crossOff); // На пустые места - крестики
             }
+}
+
+void MainWindow::BeginLsn()
+{  //Проверка: начать урок только если параметры указаны для всех учеников
+    for(int j = 0, k = 0; j < 5; j++)
+        for (int i = 0; i < 3; i++, k+=2)
+            if (classRoom->GetPlan(i+1,j+1) != 0)
+                if (classRoom->getStSex(k) == "")
+                {
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle(" ");
+                    msgBox.setIcon(QMessageBox::Critical);
+                    msgBox.setText("Параметры указаны не для всех учеников");
+                    msgBox.setWindowIcon(blank);
+                    msgBox.exec();
+                    return;
+                }
+    // Если проверка пройдена, то начинается урок
+    labMenu1->hide();
+    labMenu2->hide();
+    labDelete->hide();
+    labCounter->hide();
+    cmbbox->hide();
+    bCont->hide();
+    bDel->hide();
+    bExit->hide();
+    bFinLsn->show();
+    bEdit->show();
+    for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
+            {
+                if (i == 3) {i = 0; j++;}
+                if (classRoom->GetPlan(i+1,j+1) == 0)
+                    (labels+k)->clear(); // Убрать крестики, оставить только парты
+            }
+    m_player->play();
+    labTcher->hide();
+    time->restart();          // Начать отсчет времени
+    timer2->start(100);       // Запустить анимацию захода учителя в класс
+    labMinutes->show();labSeconds->show();labStWtch->show(); // Секундомер
 }
 
 // Учитель заходит в класс
 void MainWindow::tcherGoes()
 {
-    static int frame = 1, x = labTcher->x(), f = 0;
+    static int frame = 1, x = 590, f = 0;
     if ((time->elapsed() >= 1000)&&(time->elapsed() <= 2000))
     {
         labTcher->show();
         palette.setBrush(QPalette::Background, bkgndOp);
         this->setPalette(palette);
-        labTcher->show();
         f = 1;
     }
     if ((time->elapsed() > 2000)&&(time->elapsed() <= 2500))
@@ -472,69 +606,20 @@ if(f)
     if (frame == 7) frame = 1;
     labTcher->setGeometry(x,150,tcher1.width(),tcher1.height());
     x-=5;
-    if (x == 350)
+    if (x == 350) // Дошла до своего стула
     {
         labTcher->setPixmap(tcherSits);
         labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
+        bFinLsn->setEnabled(true);
+        bEdit->setEnabled(true);
         timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране
         timer->start(125);// Запустить секундомер
         ShowHints();
         timerHints->start(1250);
+        x = 590;
+        f = 0;
     }
 }
-}
-
-void MainWindow::Stopwatch()
-{
-    static int min = 0,sec = 0;
-    sec++;
-    if (sec == 60)
-    {
-        min++;
-        sec = 0;
-    }
-    if (min < 10) labMinutes->setText("0" + QString::number(min));
-    else labMinutes->setText(QString::number(min));
-    if (sec < 10) labSeconds->setText(":0"+QString::number(sec));
-    else labSeconds->setText(":"+QString::number(sec));
-    if (min == 40) timer->stop();
-}
-
-
-void MainWindow::BeginLsn()
-{  //Проверка: начать урок только если параметры указаны для всех учеников
-    for(int j = 0, k = 0; j < 5; j++)
-        for (int i = 0; i < 3; i++, k+=2)
-            if (classRoom->GetPlan(i+1,j+1) != 0)
-                if (classRoom->getSex(k) == "")
-                {
-                    QMessageBox msgBox;
-                    msgBox.setWindowTitle(" ");
-                    msgBox.setIcon(QMessageBox::Critical);
-                    msgBox.setText("Параметры указаны не для всех учеников");
-                    msgBox.setWindowIcon(blank);
-                    msgBox.exec();
-                    return;
-                }
-    // Если проверка пройдена, то начинается урок
-    labMenu1->hide();
-    labMenu2->hide();
-    labDelete->hide();
-    labCounter->hide();
-    cmbbox->hide();
-    bCont->hide();
-    bDel->hide();
-    bExit->hide();
-    for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
-            {
-                if (i == 3) {i = 0; j++;}
-                if (classRoom->GetPlan(i+1,j+1) == 0)
-                    (labels+k)->clear(); // Убрать крестики, оставить только парты
-            }
-    m_player->play();
-    time->start();            // Начать отсчет времени
-    timer2->start(100);       // Запустить анимацию захода учителя в класс
-    labMinutes->show();labSeconds->show(); // Секундомер
 }
 
 void MainWindow::on_bDel_clicked()
@@ -582,26 +667,3 @@ void MainWindow::DeleteAllDesks()
 
 
 
-
-
-
-
-// Перетаскивание
-/*bool MainWindow::eventFilter(QObject *watched, QEvent *event)
-{
-    if(watched == ui->label)
-    {
-        if (event->type() == QEvent::MouseButtonPress)    // Если зажата кнопка мыши,
-            f = 1;                                        // то в режим перетаскивания label
-        else
-        if (event->type() == QEvent::MouseButtonRelease)  // Если кнопка мыши отпущена,
-            f = 0;                                        // то завершить перетаскивание
-    }
-    return false;
-}
-
-void MainWindow::timerCheck()
-{
-    if(f) ui->label->move((ui->label->parentWidget()->mapFromGlobal(QCursor::pos()))-(*point));
-}
-*/

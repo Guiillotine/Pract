@@ -40,5 +40,8 @@
         <file>images/statEvil.png</file>
         <file>images/statKind.png</file>
         <file>images/statNorm.png</file>
+        <file>images/teatcherMenu.png</file>
+        <file>images/pupils.ico</file>
+        <file>images/teacher.ico</file>
     </qresource>
 </RCC>

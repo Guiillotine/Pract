@@ -3,6 +3,7 @@
 ClassRoom::ClassRoom()
 {
     students = new Student[31]; // Максимально возможное количество учеников - 30, +1 - буфер для пересадки
+    teatcher = new Teacher();
     BuffStNum = -1; // Номер ученика при пересадке
 }
 
@@ -51,31 +52,31 @@ void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, in
 
 void ClassRoom::CopySt(int numberSt) // Скопировать данные указанного ученика в конец массива учеников (буфер)
 {
-    setStudent(30, getFio(numberSt), getSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+    setStudent(30, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
     BuffStNum = numberSt;
 }
 
 void ClassRoom::PasteSt(int numberSt) // Скопировать данные из конца массива учеников (буфера) в указанного ученика
 {
-    if (getSex(numberSt)!="")
+    if (getStSex(numberSt)!="")
     {
         ClassRoom tmp;
         // Копировать данные ученика, на место которого совершена вставка из буфера
-        tmp.setStudent(0, getFio(numberSt), getSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+        tmp.setStudent(0, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
         // Вставка из буффера
-        setStudent(numberSt, getFio(30), getSex(30), getStHealth(30), getStConcentr(30), getStHumanit(30), getStTechnical(30), getStRuffian(30));
+        setStudent(numberSt, getStFio(30), getStSex(30), getStHealth(30), getStConcentr(30), getStHumanit(30), getStTechnical(30), getStRuffian(30));
         // Вставка из временного объекта на место, с которого было совершено копирование
-        setStudent(getBuffStNum(), tmp.getFio(0), tmp.getSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
-        setStudent(30,getFio(30),"",0,0,0,0,0); // Очистить буфер
+        setStudent(getBuffStNum(), tmp.getStFio(0), tmp.getStSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
+        setStudent(30,getStFio(30),"",0,0,0,0,0); // Очистить буфер
     }
 }
 
-QString ClassRoom::getFio(int numberSt)
+QString ClassRoom::getStFio(int numberSt)
 {
     return (students+numberSt)->fio;
 }
 
-QString ClassRoom::getSex(int numberSt)
+QString ClassRoom::getStSex(int numberSt)
 {
     return (students+numberSt)->sex;
 }
@@ -108,4 +109,46 @@ int ClassRoom::getStHealth(int numberSt)
 int ClassRoom::getBuffStNum()
 {
     return BuffStNum;
+}
+
+void ClassRoom::SetTeatcher(QString fio, int health, int communication, int creativity, int strictness)
+{
+    teatcher->fio = fio;
+    teatcher->health = health;
+    teatcher->communication = communication;
+    teatcher->creativity = creativity;
+    teatcher->strictness = strictness;
+}
+
+QString ClassRoom::getTchrFio()
+{
+    return teatcher->fio;
+}
+
+int ClassRoom::getTchrHealth()
+{
+    return teatcher->health;
+}
+
+int ClassRoom::getTchrComm()
+{
+    return teatcher->communication;
+}
+
+int ClassRoom::getTchrCreat()
+{
+    return teatcher->creativity;
+}
+
+int ClassRoom::getTchrStrict()
+{
+    return teatcher->strictness;
+}
+
+ClassRoom::Teacher::Teacher()
+{
+    fio = "Учитель";
+    communication = 50;// Коммунитативные способности
+    creativity = 50;   // Креативность
+    strictness = 50;   // Строгость
 }

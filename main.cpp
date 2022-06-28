@@ -19,6 +19,5 @@ int main(int argc, char *argv[])
     w->scrollArea->setMaximumSize(bkgrnd.width()+20,bkgrnd.height()); // Рраз-р по Y - от 200 pix до раз-ра фонового изобр.
     w->scrollArea->resize(bkgrnd.width()+20,bkgrnd.height());         // Открывать окно в максимально допустимом размере
     w->scrollArea->show();
-    //w->show();
     return a.exec();
 }

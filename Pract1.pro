@@ -21,19 +21,22 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     studentwin1.cpp \
-    studentwin2.cpp
+    studentwin2.cpp \
+    teatcherwin.cpp
 
 HEADERS += \
     classroom.h \
     human.h \
     mainwindow.h \
     studentwin1.h \
-    studentwin2.h
+    studentwin2.h \
+    teatcherwin.h
 
 FORMS += \
     mainwindow.ui \
     studentwin1.ui \
-    studentwin2.ui
+    studentwin2.ui \
+    teatcherwin.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
