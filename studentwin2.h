@@ -25,13 +25,9 @@ private slots:
     void on_bCancel_clicked();
     void on_bOk_clicked();
     void on_bCopy_2_clicked();
-
     void on_bCopy_clicked();
-
     void on_bPaste_clicked();
-
     void on_bPaste_2_clicked();
-
 private:
     Ui::studentwin2 *ui;
     QIcon icon, blank;

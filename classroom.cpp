@@ -4,6 +4,7 @@ ClassRoom::ClassRoom()
 {
     students = new Student[31]; // Максимально возможное количество учеников - 30, +1 - буфер для пересадки
     teatcher = new Teacher();
+    subject = new Subject();
     BuffStNum = -1; // Номер ученика при пересадке
 }
 

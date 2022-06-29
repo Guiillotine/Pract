@@ -22,6 +22,7 @@ SOURCES += \
     mainwindow.cpp \
     studentwin1.cpp \
     studentwin2.cpp \
+    subject.cpp \
     teatcherwin.cpp
 
 HEADERS += \
@@ -30,6 +31,7 @@ HEADERS += \
     mainwindow.h \
     studentwin1.h \
     studentwin2.h \
+    subject.h \
     teatcherwin.h
 
 FORMS += \

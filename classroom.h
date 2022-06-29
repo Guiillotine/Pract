@@ -1,6 +1,7 @@
 #ifndef CLASSROOM_H
 #define CLASSROOM_H
 #include "human.h"
+#include "subject.h"
 
 class ClassRoom
 {
@@ -25,28 +26,28 @@ public:
     int getTchrComm();
     int getTchrCreat();
     int getTchrStrict();
+    Subject *subject;                      // Школьный предмет
 private:                                   // (ряд, номер парты в нём, вид парты 0-нет,1-одномест.,2-двухмест.)
     int plan[5][3] = {0};                  // План расположения парт в классе
     int BuffStNum;                         // Буфер для номера ученика при пересадке
-
     class Teacher : public Human           // Внутренний класс - учитель
     {
-    public:
-        Teacher();
-        int communication;// Коммунитативные способности
-        int creativity;   // Креативность
-        int strictness;   // Строгость
+        public:
+            Teacher();
+            int communication;// Коммунитативные способности
+            int creativity;   // Креативность
+            int strictness;   // Строгость
     };
     Teacher *teatcher;     // Учитель
     class Student : public Human           // Внутренний класс - ученик
     {
-    public:
-        Student();
-        QString sex;  // Пол ученика
-        int concentr; // Способность к концентрации
-        int humanit;  // Склонность к гуманитарным наукам
-        int technical;// Склонность к техническим наукам
-        int ruffian;  // Нарушение дисциплины
+        public:
+            Student();
+            QString sex;  // Пол ученика
+            int concentr; // Способность к концентрации
+            int humanit;  // Склонность к гуманитарным наукам
+            int technical;// Склонность к техническим наукам
+            int ruffian;  // Нарушение дисциплины
     };
     Student *students;  // Ученики в классе
 };

@@ -44,6 +44,7 @@ public slots:
     void ChangeHints();   // Менять значение подсказок
     void BfrLsn();        // Вид экрана до начала урока
     void BeginLsn();      // Начать урок
+    void Pause();         // Пауза
     void tcherGoes();     // Учитель идет
     void DeleteAllDesks();// Удалить все парты
     void on_bDel_clicked();
@@ -74,8 +75,9 @@ private:
     QLabel *labDiscip;                  // Дисциплина учеников
     QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
     QLabel *labTcher;                                  // Учитель
+    QLabel *labBoard;                                  // Школьная доска
     QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
-    QPushButton *bEdit,*bFinLsn;                       // Кнопки меню во время урока
+    QPushButton *bPause,*bFinLsn;                      // Кнопки меню во время урока
     QComboBox *cmbbox;
 signals:
     void sig(ClassRoom*,int);

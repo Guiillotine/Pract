@@ -43,5 +43,9 @@
         <file>images/teatcherMenu.png</file>
         <file>images/pupils.ico</file>
         <file>images/teacher.ico</file>
+        <file>images/geography.png</file>
+        <file>images/history.png</file>
+        <file>images/maths.png</file>
+        <file>images/russ.png</file>
     </qresource>
 </RCC>

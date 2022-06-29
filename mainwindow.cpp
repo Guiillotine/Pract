@@ -93,24 +93,26 @@ MainWindow::MainWindow(QWidget *parent)
     labMinutes->setFont(QFont("Franklin Gothic Demi Cond", 20));
     labMinutes->setStyleSheet("QLabel {color: #ddc6af;}");
     labMinutes->setText("00");
-    //labMinutes->hide();
     labSeconds = new QLabel(this);
     labSeconds->setGeometry(830,40,80,40);
     labSeconds->setFont(QFont("Franklin Gothic Demi Cond", 20));
     labSeconds->setStyleSheet("QLabel {color: #ddc6af;}");
     labSeconds->setText(":00");
-    //labSeconds->hide();
     labStWtch = new QLabel(this);
-    labStWtch->setGeometry(783,10,250,40);
+    labStWtch->setGeometry(767,10,250,40);
     labStWtch->setFont(QFont("Franklin Gothic Demi Cond", 20));
     labStWtch->setStyleSheet("QLabel {color: #ddc6af;}");
-    labStWtch->setText("Урок идёт");
-    //labStWtch->hide();
+    labStWtch->setText("Время урока");
+    // Школьная доска
+    labBoard = new QLabel(this);
+    labBoard->setGeometry(305,0,300,100);
     //*********************************
     // Выпадающий список с предметами
     cmbbox = new QComboBox(this);
     cmbbox->setGeometry(765,6,135,20);
-    cmbbox->addItem("Математика");cmbbox->addItem("Русский");cmbbox->addItem("История");cmbbox->addItem("География");
+    // Считать из класса предметов названия для ComboBox
+    for (int i = 0; i < classRoom->subject->getSbjNmbr(); i++)
+        cmbbox->addItem(classRoom->subject->getSubject(i));
     //************Buttons**************
     // Начать урок
     bCont = new QPushButton(this);
@@ -118,7 +120,6 @@ MainWindow::MainWindow(QWidget *parent)
     bCont->setFont(QFont("Franklin Gothic Demi Cond", 20));      // Установить шрифт кнопки
     bCont->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bCont->setText("Начать урок");
-    //bCont->show();
     connect(bCont, SIGNAL (clicked()),this, SLOT (BeginLsn()));
     // Удалить все парты
     bDel = new QPushButton(this);
@@ -126,7 +127,6 @@ MainWindow::MainWindow(QWidget *parent)
     bDel->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
     bDel->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bDel->setText("Сброс");
-    //bDel->show();
     connect(bDel, SIGNAL (clicked()),this, SLOT (on_bDel_clicked()));
     // Выход
     bExit = new QPushButton(this);
@@ -134,23 +134,20 @@ MainWindow::MainWindow(QWidget *parent)
     bExit->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
     bExit->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bExit->setText("Выход");
-    //bExit->show();
     connect(bExit, SIGNAL (clicked()),this, SLOT (on_bExit_clicked()));
     // Редактировать
-    bEdit = new QPushButton(this);
-    bEdit->setGeometry(720,796,221,65);                    // Размер и расположение кнопки
-    bEdit->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
-    bEdit->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bEdit->setText("Редактировать");
-    //bEdit->show();
-    //connect(bDel, SIGNAL (clicked()),this, SLOT (on_bDel_clicked()));
+    bPause = new QPushButton(this);
+    bPause->setGeometry(720,796,221,65);                    // Размер и расположение кнопки
+    bPause->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
+    bPause->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
+    bPause->setText("Редактировать");
+    connect(bPause, SIGNAL (clicked()),this, SLOT (Pause()));
     // Закончить урок
     bFinLsn = new QPushButton(this);
     bFinLsn->setGeometry(720,862,221,65);                    // Размер и расположение кнопки
     bFinLsn->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
     bFinLsn->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
     bFinLsn->setText("Закончить урок");
-    //bFinLsn->show();
     connect(bFinLsn, SIGNAL (clicked()),this, SLOT (BfrLsn()));
     // Вид экрана до начала урока
     BfrLsn();
@@ -166,19 +163,6 @@ MainWindow::~MainWindow()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-
-    /*for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
-        {
-            if (i == 3) {i = 0; j++;}
-            if((watched == labels+k)&&(event->type() == QEvent::MouseButtonPress))
-                if (classRoom.GetPlan(i+1,j+1) == 1)
-                {
-                    classRoom.EditPlan(i+1,j+1,0); // Обозначить в плане отсутствие парты в i+1-вом ряду на j+1-вом месте
-                    EditClass(i+1,j+1);
-                    watched = labMenu1;
-                }
-        }*/
-
     if(watched == labDelete)
     {
         if (event->type() == QEvent::MouseButtonPress)     // Если зажата кнопка мыши
@@ -256,9 +240,10 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 labMenu2->setGeometry(750,270,menu2.width(),menu2.height());
             }
         }
-
+if (!timer->isActive()) //Разреш. редактирование данные если урок не начался или стоит на паузе
+{
     if((watched == labTcher)&&(event->type() == QEvent::MouseButtonDblClick))
-    {// Окрыть окно ввода данных ученика для одноместной парты
+    {// Окрыть окно ввода данных учителя
           TeatcherWin *tchrWin = new TeatcherWin();
           connect(this, &MainWindow::sigTcher,tchrWin, &TeatcherWin::FillWin);
           emit sigTcher(classRoom);
@@ -302,6 +287,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                     }
                 }
             }
+}
 
     return false;
 }
@@ -495,9 +481,11 @@ void MainWindow::BfrLsn()
     bDel->show();
     bExit->show();
     bFinLsn->hide();
-    bEdit->hide();
+    bPause->hide();
     bFinLsn->setEnabled(false); // До начала урока кнопки недоступны
-    bEdit->setEnabled(false);
+    bPause->setEnabled(false);
+    bPause->setText("Редактировать");
+    labBoard->hide();
     labMinutes->hide();
     labSeconds->hide();
     labStWtch->hide();
@@ -555,7 +543,10 @@ void MainWindow::BeginLsn()
     bDel->hide();
     bExit->hide();
     bFinLsn->show();
-    bEdit->show();
+    bPause->show();
+    //labBoard->show();
+    classRoom->subject->setName(cmbbox->currentText());
+    classRoom->subject->showBlackboard(labBoard);
     for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
             {
                 if (i == 3) {i = 0; j++;}
@@ -567,6 +558,22 @@ void MainWindow::BeginLsn()
     time->restart();          // Начать отсчет времени
     timer2->start(100);       // Запустить анимацию захода учителя в класс
     labMinutes->show();labSeconds->show();labStWtch->show(); // Секундомер
+}
+
+void MainWindow::Pause()
+{
+    if (timer->isActive()) // Если пауза не стоит, поставить на паузу
+    {
+        bPause->setText("Продолжить");
+        timer->stop();      // Остановить секундомер
+        timerHints->stop(); // Остановить изменение подсказок
+    }
+    else // Если урок уже на паузе, то продолжить
+    {
+        bPause->setText("Редактировать");
+        timer->start();     // Секундомер продолжает отсчет
+        timerHints->start();// Продолжить изменение подсказок
+    }
 }
 
 // Учитель заходит в класс
@@ -606,12 +613,12 @@ if(f)
     if (frame == 7) frame = 1;
     labTcher->setGeometry(x,150,tcher1.width(),tcher1.height());
     x-=5;
-    if (x == 350) // Дошла до своего стула
+    if (x == 350) // Дошла до стула
     {
         labTcher->setPixmap(tcherSits);
         labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
         bFinLsn->setEnabled(true);
-        bEdit->setEnabled(true);
+        bPause->setEnabled(true);
         timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране
         timer->start(125);// Запустить секундомер
         ShowHints();
@@ -632,7 +639,16 @@ void MainWindow::on_bDel_clicked()
      msgBox.setText("Вы уверены?");
      msgBox.setWindowIcon(blank);
      msgBox.exec();
-     if(msgBox.clickedButton() == yes) DeleteAllDesks();
+     if(msgBox.clickedButton() == yes)
+     {
+         DeleteAllDesks();
+         classRoom->SetTeatcher("Учитель",100,50,50,50);
+         for (int i = 0, j = 0, k = 0; k < 30; i++, k++)
+                 { // Удалить данные всех учеников
+                     if (i == 3) {i = 0; j++;}
+                     classRoom->setStudent(k,"Ученик","",100,50,50,50,0);
+                 }
+     }
      else if(msgBox.clickedButton() == no)  msgBox.close();
 }
 
@@ -667,3 +683,14 @@ void MainWindow::DeleteAllDesks()
 
 
 
+/*for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
+    {
+        if (i == 3) {i = 0; j++;}
+        if((watched == labels+k)&&(event->type() == QEvent::MouseButtonPress))
+            if (classRoom.GetPlan(i+1,j+1) == 1)
+            {
+                classRoom.EditPlan(i+1,j+1,0); // Обозначить в плане отсутствие парты в i+1-вом ряду на j+1-вом месте
+                EditClass(i+1,j+1);
+                watched = labMenu1;
+            }
+    }*/
