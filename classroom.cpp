@@ -1,5 +1,5 @@
 #include "classroom.h"
-
+#include <QMessageBox>
 ClassRoom::ClassRoom()
 {
     students = new Student[31]; // Максимально возможное количество учеников - 30, +1 - буфер для пересадки
@@ -33,6 +33,34 @@ ClassRoom::Student::Student()
     humanit = 50;
     technical = 50;
     ruffian = 0;
+    learn = 0;     // Усвоение материала
+    interest = 50; // Интерес
+    //discip = 50;   // Дисциплина
+    discip  = rand() % 100;
+}
+
+void ClassRoom::Student::learning(int tchrComm,int tchrCreat,int tchrStrict,int k, int k2)
+{
+    learn = rand() % 100;
+    interest = rand() % 100;
+    /*learn = k;
+    interest = k2;*/
+
+    //if (ruffian>70) discip = 0;
+    //else if (ruffian<30) discip = 100;
+
+    //discip = disc
+
+    //discip  = rand() % 100;
+    /*if ((ruffian>70)&&(discip>0))
+    {
+        if (1)
+        discip-=1;
+    }
+    else if ((ruffian<30)&&(discip<100))
+    {
+        discip+=1;
+    }*/
 }
 
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
@@ -72,6 +100,61 @@ void ClassRoom::PasteSt(int numberSt) // Скопировать данные и�
     }
 }
 
+void ClassRoom::DelSt(int numberSt)
+{
+    setStudent(numberSt,"Ученик","",100,50,50,50,0);
+}
+
+void ClassRoom::StLearning(int numberSt)
+{
+    int discArr[8] = {-1};
+
+    int k = 0, k2 = 0;
+    int numberDsk = numberSt/2;
+
+    int x,y;
+    x = numberDsk/3; y = numberDsk%3;
+    //for (int i = 0, n = 0,a = 0; i < 5; i++)
+        //for (int j = 0; j < 3; j++, n++)
+        //
+            int a = 0;
+
+            if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
+            {
+                discArr[a] = getStDiscip(((x-1)*3+y)*2);
+                a++;
+            }
+            if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
+            {
+                discArr[a] = getStDiscip(((x+1)*3+y)*2);
+                a++;
+            }
+            if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
+            {
+                discArr[a] = getStDiscip((x*3+(y+1))*2);
+                a++;
+            }
+            if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
+            {
+                discArr[a] = getStDiscip((x*3+(y-1))*2);
+                a++;
+            }
+        //}
+
+    QString str = QString::number(numberDsk) + " ";
+    for(int i = 0; i < 8; i++)
+    {
+        str=str+QString::number(discArr[i])+ " ";
+    }
+
+    /*QMessageBox msgBox;
+    msgBox.setWindowTitle(str);
+    msgBox.setText(str);
+    msgBox.exec();*/
+
+    (students+numberSt)->learning(teatcher->communication,teatcher->creativity,teatcher->strictness,k,k2);
+}
+
 QString ClassRoom::getStFio(int numberSt)
 {
     return (students+numberSt)->fio;
@@ -105,6 +188,21 @@ int ClassRoom::getStRuffian(int numberSt)
 int ClassRoom::getStHealth(int numberSt)
 {
     return (students+numberSt)->health;
+}
+
+int ClassRoom::getStLearn(int numberSt)
+{
+    return (students+numberSt)->learn;
+}
+
+int ClassRoom::getStInterest(int numberSt)
+{
+    return (students+numberSt)->interest;
+}
+
+int ClassRoom::getStDiscip(int numberSt)
+{
+    return (students+numberSt)->discip;
 }
 
 int ClassRoom::getBuffStNum()

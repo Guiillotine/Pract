@@ -8,10 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->bCont->hide();
-    timer = new QTimer(this);                                      // Секундомер для засечения времени урока
-    timerHints = new QTimer(this);                                  // Для смены содержимого подсказок
-    timerDrag = new QTimer(this);                                   // Таймер для замера времени от одного нажатия клавиши до следующего
-    timer2 = new QTimer(this);                                     // Таймер для анимации перед началом урока (учитель входит в класс)
+    timer = new QTimer();                                   // Секундомер для засечения времени урока
+    timerHints = new QTimer();                              // Для смены содержимого подсказок
+    timerDrag = new QTimer();                               // Таймер для замера времени от одного нажатия клавиши до следующего
+    timer2 = new QTimer();                                  // Таймер для анимации перед началом урока (учитель входит в класс)
     connect(timer, SIGNAL(timeout()),this, SLOT(Stopwatch()));  // Связать таймер со слотом - секундомером
     connect(timerHints, SIGNAL(timeout()),this, SLOT(ChangeHints()));  // Связать таймер со слотом
     connect(timer2, SIGNAL(timeout()),this, SLOT(tcherGoes()));  // Связать таймер 2 со слотом
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setPalette(palette);
     //*************Labels***************
     // Учитель
-    labTcher = new QLabel(this);
+    labTcher = new MyLabel(this,tcherMenu);
     //labTcher->setPixmap(tcherMenu);
     //labTcher->setGeometry(342,155,tcherMenu.width(),tcherMenu.height());
     labTcher->installEventFilter(this); // Для перехвата событий для label учителя
@@ -74,19 +74,16 @@ MainWindow::MainWindow(QWidget *parent)
     labCounter->setGeometry(815,645,60,20);
     labCounter->setText("x15");
     // Значок удаления в меню
-    labDelete = new QLabel(this);
+    labDelete = new MyLabel(this,menuDel);
     labDelete->installEventFilter(this);               // Для перехвата событий для labDelete
-    labDelete->setPixmap(menuDel);
-    labDelete->setGeometry(800,150,menuDel.width(),menuDel.height());
+    labDelete->setPos(800,150);
     // Варианты парт в меню - одноместная и двухместная
-    labMenu1 = new QLabel(this);
+    labMenu1 = new MyLabel(this,menu1);
     labMenu1->installEventFilter(this);                // Для перехвата событий для labMenu1
-    labMenu1->setPixmap(menu1);
-    labMenu1->setGeometry(778,440,menu1.width(),menu1.height());
-    labMenu2 = new QLabel(this);
-    labMenu2->installEventFilter(this);                // Для перехвата событий для labMenu1
-    labMenu2->setPixmap(menu2);
-    labMenu2->setGeometry(750,270,menu2.width(),menu2.height());
+    labMenu1->setPos(778,440);
+    labMenu2 = new MyLabel(this,menu2);
+    labMenu2->installEventFilter(this);                // Для перехвата событий для labMenu2
+    labMenu2->setPos(750,270);
     // Секундомер
     labMinutes = new QLabel(this);
     labMinutes->setGeometry(802,40,80,40);
@@ -115,39 +112,24 @@ MainWindow::MainWindow(QWidget *parent)
         cmbbox->addItem(classRoom->subject->getSubject(i));
     //************Buttons**************
     // Начать урок
-    bCont = new QPushButton(this);
-    bCont->setGeometry(QRect(QPoint(720, 730),QSize(221, 65)));  // Размер и расположение кнопки
-    bCont->setFont(QFont("Franklin Gothic Demi Cond", 20));      // Установить шрифт кнопки
-    bCont->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bCont->setText("Начать урок");
+    bCont = new MyButton(this,"Начать урок");
+    bCont->SetPos(720, 730);
     connect(bCont, SIGNAL (clicked()),this, SLOT (BeginLsn()));
     // Удалить все парты
-    bDel = new QPushButton(this);
-    bDel->setGeometry(QRect(QPoint(720, 796),QSize(221, 65)));   // Размер и расположение кнопки
-    bDel->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
-    bDel->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bDel->setText("Сброс");
+    bDel = new MyButton(this,"Сброс");
+    bDel->SetPos(720, 796);
     connect(bDel, SIGNAL (clicked()),this, SLOT (on_bDel_clicked()));
     // Выход
-    bExit = new QPushButton(this);
-    bExit->setGeometry(QRect(QPoint(720, 862),QSize(221, 65)));  // Размер и расположение кнопки
-    bExit->setFont(QFont("Franklin Gothic Demi Cond", 20));       // Установить шрифт кнопки
-    bExit->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bExit->setText("Выход");
+    bExit = new MyButton(this,"Выход");
+    bExit->SetPos(720, 862);
     connect(bExit, SIGNAL (clicked()),this, SLOT (on_bExit_clicked()));
     // Редактировать
-    bPause = new QPushButton(this);
-    bPause->setGeometry(720,796,221,65);                    // Размер и расположение кнопки
-    bPause->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
-    bPause->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bPause->setText("Редактировать");
+    bPause = new MyButton(this,"Редактировать");
+    bPause->SetPos(720, 796);
     connect(bPause, SIGNAL (clicked()),this, SLOT (Pause()));
     // Закончить урок
-    bFinLsn = new QPushButton(this);
-    bFinLsn->setGeometry(720,862,221,65);                    // Размер и расположение кнопки
-    bFinLsn->setFont(QFont("Franklin Gothic Demi Cond", 20));// Установить шрифт кнопки
-    bFinLsn->setStyleSheet("QPushButton {background-color: #ffeb7c; color: #d5950b;}");
-    bFinLsn->setText("Закончить урок");
+    bFinLsn = new MyButton(this,"Закончить урок");
+    bFinLsn->SetPos(720, 862);
     connect(bFinLsn, SIGNAL (clicked()),this, SLOT (BfrLsn()));
     // Вид экрана до начала урока
     BfrLsn();
@@ -175,13 +157,15 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
         if (event->type() == QEvent::MouseButtonRelease)   // Если кнопка мыши отпущена,
         {
             timerDrag->stop();                             // то завершить перетаскивание
-            // Проверка места, на котором отпущена мышь: если на каком-либо свободном крестике
+            // Проверка места, на котором отпущена мышь
             for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
             {
                 if (i == 3) {i = 0; j++;}
                 if (labDelete->x()<(labels+k)->x()+50 && labDelete->x()>(labels+k)->x()-75 && labDelete->y()<(labels+k)->y()+25 && labDelete->y()>(labels+k)->y()-75 && (classRoom->GetPlan(i+1,j+1) != 0))
                 {
-                    classRoom->EditPlan(i+1,j+1,0); // Обозначить в плане одноместную парту в i+1-вом ряду на j+1-вом месте
+                     classRoom->DelSt(k*2);         // Удалить данные ученика
+                    if (classRoom->GetPlan(i+1,j+1) == 2) classRoom->DelSt(k*2+1); // Удалить данные ученика-соседа
+                    classRoom->EditPlan(i+1,j+1,0); // Удалить парту из плана
                     EditClass(i+1,j+1);
                     (labels+k)->setPixmap(crossOff);
                 }
@@ -359,9 +343,9 @@ void MainWindow::ShowHints()
                 else if (classRoom->getStRuffian(k) < 30) (labSymbols+k)->setPixmap(statKind);
                 else*/
                 (labSymbols+k)->setPixmap(statNorm);
-                (labLearn+k)->setText("0%");
-                (labInterest+k)->setText("50%");
-                (labDiscip+k)->setText("50%");
+                (labLearn+k)->setText(QString::number(classRoom->getStLearn(k)));
+                (labInterest+k)->setText(QString::number(classRoom->getStInterest(k)));
+                (labDiscip+k)->setText(QString::number(classRoom->getStDiscip(k)));
                 (labSymbols+k)->setGeometry(142+i*160,315+j*100,wdth,hght);
                 (labLearn+k)->setGeometry(162+i*160,315+j*100,60,9);
                 (labInterest+k)->setGeometry(162+i*160,328+j*100,60,9);
@@ -430,22 +414,24 @@ void MainWindow::ChangeHints()
                 if (i == 3) {i = 0; j++;}
                 if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
                 {
-                    int dis = rand() % 100;
-                    (labLearn+k)->setText(QString::number(rand() % 100));
-                    (labInterest+k)->setText(QString::number(rand() % 100));
-                    (labDiscip+k)->setText(QString::number(dis));
-                    if (dis>70) (labSymbols+k)->setPixmap(statEvil);
-                    else if (dis < 30) (labSymbols+k)->setPixmap(statKind);
+                    int dis = classRoom->getStDiscip(k);
+                    classRoom->StLearning(k);
+                    (labLearn+k)->setText(QString::number(classRoom->getStLearn(k)) + "%");
+                    (labInterest+k)->setText(QString::number(classRoom->getStInterest(k)) + "%");
+                    (labDiscip+k)->setText(QString::number(dis) + "%");
+                    if (dis>70) (labSymbols+k)->setPixmap(statKind);
+                    else if (dis < 30) (labSymbols+k)->setPixmap(statEvil);
                     else (labSymbols+k)->setPixmap(statNorm);
                 }
                 if (classRoom->GetPlan(i+1,j+1) == 2)
                 {
-                    int dis = rand() % 100;
-                    (labLearn+k+1)->setText(QString::number(rand() % 100));
-                    (labInterest+k+1)->setText(QString::number(rand() % 100));
-                    (labDiscip+k+1)->setText(QString::number(dis));
-                    if (dis>70) (labSymbols+k+1)->setPixmap(statEvil);
-                    else if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
+                    int dis = classRoom->getStDiscip(k+1);
+                    classRoom->StLearning(k+1);
+                    (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)) + "%");
+                    (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1)) + "%");
+                    (labDiscip+k+1)->setText(QString::number(dis) + "%");
+                    if (dis>70) (labSymbols+k+1)->setPixmap(statKind);
+                    else if (dis < 30) (labSymbols+k+1)->setPixmap(statEvil);
                     else (labSymbols+k+1)->setPixmap(statNorm);
                 }
     }
@@ -499,7 +485,7 @@ void MainWindow::BfrLsn()
     labMenu2->show();
     // Учитель
     labTcher->setPixmap(tcherMenu);
-    labTcher->setGeometry(343,157,tcherMenu.width(),tcherMenu.height());
+    labTcher->setPos(343,157);
     // Спрятать подсказки
     for (int i = 0, j = 0, k = 0; k<30; i++, k+=1)
         {
@@ -611,12 +597,14 @@ if(f)
     }
     frame++;
     if (frame == 7) frame = 1;
-    labTcher->setGeometry(x,150,tcher1.width(),tcher1.height());
+    labTcher->setPos(x,150);
+    //labTcher->setGeometry(x,150,tcher1.width(),tcher1.height());
     x-=5;
     if (x == 350) // Дошла до стула
     {
         labTcher->setPixmap(tcherSits);
-        labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
+        labTcher->setPos(343,157);
+        //labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
         bFinLsn->setEnabled(true);
         bPause->setEnabled(true);
         timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране

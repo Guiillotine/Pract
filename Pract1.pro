@@ -20,6 +20,9 @@ SOURCES += \
     human.cpp \
     main.cpp \
     mainwindow.cpp \
+    mybutton.cpp \
+    mylabel.cpp \
+    stopwatch.cpp \
     studentwin1.cpp \
     studentwin2.cpp \
     subject.cpp \
@@ -29,6 +32,9 @@ HEADERS += \
     classroom.h \
     human.h \
     mainwindow.h \
+    mybutton.h \
+    mylabel.h \
+    stopwatch.h \
     studentwin1.h \
     studentwin2.h \
     subject.h \

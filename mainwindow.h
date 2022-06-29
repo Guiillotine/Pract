@@ -13,10 +13,12 @@
 #include <QMediaPlayer>         // Плееры для воспроизведения звука
 #include <QMediaPlayList>       // Для звука
 #include "classroom.h"          // Класс "Классная комната"
-#include "teatcherwin.h"       // Окно для заполнения данных учителя
+#include "teatcherwin.h"        // Окно для заполнения данных учителя
 #include "studentwin1.h"        // Окно для заполнения одного ученика
 #include "studentwin2.h"        // Окно для заполнения двух учеников
 #include "human.h"              // Класс "Человек"
+#include "mybutton.h"
+#include "mylabel.h"
 
 class QLabel;
 class QPushButton; // Объявление класса для создания виджета-кнопки
@@ -73,11 +75,12 @@ private:
     QLabel *labLearn;                   // Усвоение урока учениками
     QLabel *labInterest;                // Интерес учеников
     QLabel *labDiscip;                  // Дисциплина учеников
-    QLabel *labMenu1, *labMenu2,*labCounter,*labDelete;// Пункты меню: одноместная, двухместная парты и оставшееся кол-во парт
-    QLabel *labTcher;                                  // Учитель
+    MyLabel *labMenu1, *labMenu2,*labDelete;// Пункты меню: одноместная, двухместная парты, удаление
+    QLabel *labCounter;                     // Оставшееся доступное кол-во парт для размещения
+    MyLabel *labTcher;                                  // Учитель
     QLabel *labBoard;                                  // Школьная доска
-    QPushButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
-    QPushButton *bPause,*bFinLsn;                      // Кнопки меню во время урока
+    MyButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
+    MyButton *bPause,*bFinLsn;                      // Кнопки меню во время урока
     QComboBox *cmbbox;
 signals:
     void sig(ClassRoom*,int);

@@ -12,13 +12,18 @@ public:
     void setStudent(int numberSt, QString fio,QString sex,int health,int concentr,int humanit,int technical,int badGuy);
     void CopySt(int numberSt); // Скопировать данные указанного ученика в конец массива учеников (буфер)
     void PasteSt(int numberSt);// Скопировать данные из конца массива учеников (буфера) в указанного ученика
+    void DelSt(int numberSt);  // Удалить из списка данные студента с заданным номером
+    void StLearning(int numberSt);// Происходящее в процессе обучения с учеником
     QString getStFio(int numberSt);
     QString getStSex(int numberSt);
     int getStConcentr(int numberSt);
     int getStHumanit(int numberSt);
     int getStTechnical(int numberSt);
     int getStRuffian(int numberSt);
-    int getStHealth(int numberSt);
+    int getStHealth(int numberSt);    
+    int getStLearn(int numberSt);
+    int getStInterest(int numberSt);
+    int getStDiscip(int numberSt);
     int getBuffStNum();
     void SetTeatcher(QString fio,int health,int communication, int creativity, int strictness);
     QString getTchrFio();
@@ -43,11 +48,15 @@ private:                                   // (ряд, номер парты в 
     {
         public:
             Student();
-            QString sex;  // Пол ученика
-            int concentr; // Способность к концентрации
-            int humanit;  // Склонность к гуманитарным наукам
-            int technical;// Склонность к техническим наукам
-            int ruffian;  // Нарушение дисциплины
+            QString sex;    // Пол ученика
+            int concentr;   // Способность к концентрации
+            int humanit;    // Склонность к гуманитарным наукам
+            int technical;  // Склонность к техническим наукам
+            int ruffian;    // Нарушение дисциплины
+            int learn;      // Усвоение материала
+            int interest;   // Интерес
+            int discip;     // Дисциплина
+            void learning(int tchrComm,int tchrCreat,int tchrStrict,int k, int k2);// Происходящее в процессе обучения
     };
     Student *students;  // Ученики в классе
 };
