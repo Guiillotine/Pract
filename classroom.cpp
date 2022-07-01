@@ -140,16 +140,17 @@ void ClassRoom::StLearning(int numberSt)
     if ((rand() % 20 == 12)&&((students+numberSt)->ruffian >= 80)) fEvil = 1; // Увеличить вероятность в 2 раза
 
     // Чем больше строгость учителя, тем больше случаев снижения негатива у учеников
-    if (rand() % (1000/(st+1)) == 3)
+    if ((st >= 90)&&(rand() % 2))
     {
         maxNegNum = MaxNegSearch();
         if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
     }
-    if (st >= 90)
+    else if (rand() % (1000/(st+1)) == 3)
     {
         maxNegNum = MaxNegSearch();
         if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
     }
+
 
     if (fEvil) (students+numberSt)->addNegative((students+numberSt)->discip+50);
 

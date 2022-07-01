@@ -56,7 +56,7 @@ private:                                   // (ряд, номер парты в 
             int humanit;    // Склонность к гуманитарным наукам
             int technical;  // Склонность к техническим наукам
             int ruffian;    // Нарушение дисциплины
-            int learn;      // Усвоение материала
+            float learn;    // Усвоение материала
             int interest;   // Интерес
             int discip;     // Дисциплина
             int fl;
