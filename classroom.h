@@ -26,6 +26,7 @@ public:
     int getStInterest(int numberSt);
     int getStDiscip(int numberSt);
     int getBuffStNum();
+    int MaxNegSearch(); // Поиск ученика с максимальным уровнем негатива
     void SetTeatcher(QString fio,int health,int communication, int creativity, int strictness);
     QString getTchrFio();
     int getTchrHealth();
@@ -60,7 +61,8 @@ private:                                   // (ряд, номер парты в 
             int discip;     // Дисциплина
             int fl;
             void initHints(); // Вычислить начальные значения подсказок состояния уч-в
-            void learning(int disc);// Происходящее в процессе обучения
+            void addNegative(int disc);// Увеличение негатива у ученика
+            void subNegative(int deskNum);// Снижение негатива у ученика в зависимости от близости к учителю
     };
     Student *students;  // Ученики в классе
 };

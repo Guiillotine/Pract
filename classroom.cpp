@@ -32,7 +32,7 @@ ClassRoom::Student::Student()
     concentr = 50;
     humanit = 50;
     technical = 50;
-    ruffian = 0;
+    ruffian = 50;
     learn = 0;     // Усвоение материала
     interest = 50; // Интерес
     discip = 50;   // Дисциплина
@@ -47,17 +47,26 @@ void ClassRoom::Student::initHints()
     discip = ruffian;
 }
 
-void ClassRoom::Student::learning(int disc)
+void ClassRoom::Student::addNegative(int disc)
 {
     //learn = 0;//rand() % 100;
     //interest = 0;//rand() % 100;
     //int a = rand() % 5;
     //if (a == 1) fl = 1;
-
+    float ruf = ruffian;
     if ((disc > discip)&&(discip < 100))
-        discip = discip + (disc - discip)/5;
+    {
+        discip = discip + ((disc - discip)/5)*(ruf/50);
+    }
     if (discip > 100) discip = 100;
 
+}
+
+void ClassRoom::Student::subNegative(int deskNum)
+{
+    int place = deskNum/3; // Номер места в ряду
+    discip = discip - (25 - place*5); // Чем дальше от учителя, тем меньше его влияние
+    if (discip < 40) discip = 40;
 }
 
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
@@ -117,30 +126,48 @@ void ClassRoom::DelSt(int numberSt)
 
 void ClassRoom::StLearning(int numberSt)
 {
-    int x,y;
     int numberDsk = numberSt/2;
-    x = numberDsk/3; y = numberDsk%3;
-    int f = 0;
-    if ((rand() % 20 == 12)&&((students+numberSt)->discip > 50)) f = 1;
-    if ((rand() % 20 == 12)&&((students+numberSt)->discip > 80)) f = 1; // Увеличить вероятность вспышки в 2 раза
+    int x = numberDsk/3; int y = numberDsk%3;
+    int fEvil = 0;
+    int maxNegNum = -1;
+    int st = teatcher->strictness;
+    int cr = teatcher->creativity;
+    int com = teatcher->communication;
+    // Чем больше склонность к нарушению дисциплины, тем больше вероятность совершения проступка
+    //if ((rand() % (500/((students+numberSt)->ruffian+1)) == 12)&&((students+numberSt)->ruffian > 50)) fEvil = 1;
 
-    if (f) (students+numberSt)->learning((students+numberSt)->discip+50);
+    if ((rand() % 20 == 12)&&(((students+numberSt)->ruffian > 50))||((students+numberSt)->discip >= 90))  fEvil = 1;
+    if ((rand() % 20 == 12)&&((students+numberSt)->ruffian >= 80)) fEvil = 1; // Увеличить вероятность в 2 раза
+
+    // Чем больше строгость учителя, тем больше случаев снижения негатива у учеников
+    if (rand() % (1000/(st+1)) == 3)
+    {
+        maxNegNum = MaxNegSearch();
+        if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
+    }
+    if (st >= 90)
+    {
+        maxNegNum = MaxNegSearch();
+        if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
+    }
+
+    if (fEvil) (students+numberSt)->addNegative((students+numberSt)->discip+50);
 
     if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
     {
-        if (f) (students+((x-1)*3+y)*2)->learning((students+numberSt)->discip);
+        if (fEvil) (students+((x-1)*3+y)*2)->addNegative((students+numberSt)->discip);
     }
     if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
     {
-        if (f) (students+((x+1)*3+y)*2)->learning((students+numberSt)->discip);
+        if (fEvil) (students+((x+1)*3+y)*2)->addNegative((students+numberSt)->discip);
     }
     if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
     {
-        if (f) (students+(x*3+(y+1))*2)->learning((students+numberSt)->discip);
+        if (fEvil) (students+(x*3+(y+1))*2)->addNegative((students+numberSt)->discip);
     }
     if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
     {
-        if (f) (students+(x*3+(y-1))*2)->learning((students+numberSt)->discip);
+        if (fEvil) (students+(x*3+(y-1))*2)->addNegative((students+numberSt)->discip);
     }
 
     /*QString str = QString::number(numberDsk) + " ";
@@ -153,7 +180,7 @@ void ClassRoom::StLearning(int numberSt)
     msgBox.setText(str);
     msgBox.exec();*/
 
-    f = 0;
+    fEvil = 0;
 }
 
 void ClassRoom::StInitHints(int numberSt)
@@ -214,6 +241,19 @@ int ClassRoom::getStDiscip(int numberSt)
 int ClassRoom::getBuffStNum()
 {
     return BuffStNum;
+}
+
+int ClassRoom::MaxNegSearch()
+{
+    int numb = -1;
+    int max = -1;
+    for (int i = 0; i < 30; i++)
+        if ((getStSex(i) != "")&&(max < getStDiscip(i))&&(getStDiscip(i) > 50))
+        {
+            max = getStDiscip(i);
+            numb = i;
+        }
+    return numb;
 }
 
 void ClassRoom::SetTeatcher(QString fio, int health, int communication, int creativity, int strictness)
