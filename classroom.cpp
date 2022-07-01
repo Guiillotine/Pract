@@ -35,32 +35,29 @@ ClassRoom::Student::Student()
     ruffian = 0;
     learn = 0;     // Усвоение материала
     interest = 50; // Интерес
-    //discip = 50;   // Дисциплина
-    discip  = rand() % 100;
+    discip = 50;   // Дисциплина
+    fl = 1;
+    //discip  = rand() % 100;
 }
 
-void ClassRoom::Student::learning(int tchrComm,int tchrCreat,int tchrStrict,int k, int k2)
+void ClassRoom::Student::initHints()
 {
-    learn = rand() % 100;
-    interest = rand() % 100;
-    /*learn = k;
-    interest = k2;*/
+    learn = 0;
+    interest = 0;
+    discip = ruffian;
+}
 
-    //if (ruffian>70) discip = 0;
-    //else if (ruffian<30) discip = 100;
+void ClassRoom::Student::learning(int disc)
+{
+    //learn = 0;//rand() % 100;
+    //interest = 0;//rand() % 100;
+    //int a = rand() % 5;
+    //if (a == 1) fl = 1;
 
-    //discip = disc
+    if ((disc > discip)&&(discip < 100))
+        discip = discip + (disc - discip)/5;
+    if (discip > 100) discip = 100;
 
-    //discip  = rand() % 100;
-    /*if ((ruffian>70)&&(discip>0))
-    {
-        if (1)
-        discip-=1;
-    }
-    else if ((ruffian<30)&&(discip<100))
-    {
-        discip+=1;
-    }*/
 }
 
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
@@ -77,11 +74,21 @@ void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, in
     (students+numberSt)->humanit = humanit;
     (students+numberSt)->technical = technical;
     (students+numberSt)-> ruffian = ruffian;
+    //StInitHints(numberSt);
+    //(students+numberSt)->discip = ruffian;
+}
+
+void ClassRoom::setHints(int numberSt, int learn, int interest, int discip)
+{
+    (students+numberSt)->learn = learn;
+    (students+numberSt)->interest = interest;
+    (students+numberSt)->discip = discip;
 }
 
 void ClassRoom::CopySt(int numberSt) // Скопировать данные указанного ученика в конец массива учеников (буфер)
 {
     setStudent(30, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+    //setHints(30, getStLearn(numberSt), getStInterest(numberSt), getStDiscip(numberSt));
     BuffStNum = numberSt;
 }
 
@@ -92,10 +99,13 @@ void ClassRoom::PasteSt(int numberSt) // Скопировать данные и�
         ClassRoom tmp;
         // Копировать данные ученика, на место которого совершена вставка из буфера
         tmp.setStudent(0, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+        tmp.setHints(0, getStLearn(numberSt), getStInterest(numberSt), getStDiscip(numberSt));
         // Вставка из буффера
-        setStudent(numberSt, getStFio(30), getStSex(30), getStHealth(30), getStConcentr(30), getStHumanit(30), getStTechnical(30), getStRuffian(30));
+        setStudent(numberSt, getStFio(BuffStNum), getStSex(BuffStNum), getStHealth(BuffStNum), getStConcentr(BuffStNum), getStHumanit(BuffStNum), getStTechnical(BuffStNum), getStRuffian(BuffStNum));
+        setHints(numberSt, getStLearn(BuffStNum), getStInterest(BuffStNum), getStDiscip(BuffStNum));
         // Вставка из временного объекта на место, с которого было совершено копирование
-        setStudent(getBuffStNum(), tmp.getStFio(0), tmp.getStSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
+        setStudent(BuffStNum, tmp.getStFio(0), tmp.getStSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
+        setHints(BuffStNum, tmp.getStLearn(0), tmp.getStInterest(0), tmp.getStDiscip(0));
         setStudent(30,getStFio(30),"",0,0,0,0,0); // Очистить буфер
     }
 }
@@ -107,52 +117,48 @@ void ClassRoom::DelSt(int numberSt)
 
 void ClassRoom::StLearning(int numberSt)
 {
-    int discArr[8] = {-1};
-
-    int k = 0, k2 = 0;
-    int numberDsk = numberSt/2;
-
     int x,y;
+    int numberDsk = numberSt/2;
     x = numberDsk/3; y = numberDsk%3;
-    //for (int i = 0, n = 0,a = 0; i < 5; i++)
-        //for (int j = 0; j < 3; j++, n++)
-        //
-            int a = 0;
+    int f = 0;
+    if ((rand() % 20 == 12)&&((students+numberSt)->discip > 50)) f = 1;
+    if ((rand() % 20 == 12)&&((students+numberSt)->discip > 80)) f = 1; // Увеличить вероятность вспышки в 2 раза
 
-            if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
-            {
-                discArr[a] = getStDiscip(((x-1)*3+y)*2);
-                a++;
-            }
-            if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
-            {
-                discArr[a] = getStDiscip(((x+1)*3+y)*2);
-                a++;
-            }
-            if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
-            {
-                discArr[a] = getStDiscip((x*3+(y+1))*2);
-                a++;
-            }
-            if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
-            {
-                discArr[a] = getStDiscip((x*3+(y-1))*2);
-                a++;
-            }
-        //}
+    if (f) (students+numberSt)->learning((students+numberSt)->discip+50);
 
-    QString str = QString::number(numberDsk) + " ";
+    if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
+    {
+        if (f) (students+((x-1)*3+y)*2)->learning((students+numberSt)->discip);
+    }
+    if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
+    {
+        if (f) (students+((x+1)*3+y)*2)->learning((students+numberSt)->discip);
+    }
+    if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
+    {
+        if (f) (students+(x*3+(y+1))*2)->learning((students+numberSt)->discip);
+    }
+    if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
+    {
+        if (f) (students+(x*3+(y-1))*2)->learning((students+numberSt)->discip);
+    }
+
+    /*QString str = QString::number(numberDsk) + " ";
     for(int i = 0; i < 8; i++)
     {
         str=str+QString::number(discArr[i])+ " ";
     }
-
-    /*QMessageBox msgBox;
+    QMessageBox msgBox;
     msgBox.setWindowTitle(str);
     msgBox.setText(str);
     msgBox.exec();*/
 
-    (students+numberSt)->learning(teatcher->communication,teatcher->creativity,teatcher->strictness,k,k2);
+    f = 0;
+}
+
+void ClassRoom::StInitHints(int numberSt)
+{
+    (students+numberSt)->initHints();
 }
 
 QString ClassRoom::getStFio(int numberSt)

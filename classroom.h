@@ -9,11 +9,12 @@ public:
     ClassRoom();
     void EditPlan(int row, int number, int value);// Редактирование плана расположения парт
     int GetPlan(int row, int number);// Узнать, какая парта находится в звдвнном ряду на заданном месте
-    void setStudent(int numberSt, QString fio,QString sex,int health,int concentr,int humanit,int technical,int badGuy);
+    void setStudent(int numberSt, QString fio,QString sex,int health,int concentr,int humanit,int technical,int ruffian);
     void CopySt(int numberSt); // Скопировать данные указанного ученика в конец массива учеников (буфер)
     void PasteSt(int numberSt);// Скопировать данные из конца массива учеников (буфера) в указанного ученика
     void DelSt(int numberSt);  // Удалить из списка данные студента с заданным номером
     void StLearning(int numberSt);// Происходящее в процессе обучения с учеником
+    void StInitHints(int numberSt);
     QString getStFio(int numberSt);
     QString getStSex(int numberSt);
     int getStConcentr(int numberSt);
@@ -33,6 +34,7 @@ public:
     int getTchrStrict();
     Subject *subject;                      // Школьный предмет
 private:                                   // (ряд, номер парты в нём, вид парты 0-нет,1-одномест.,2-двухмест.)
+    void setHints(int numberSt, int learn,int interest,int discip); // Установить показатели работы ученика в заданные значения (для копирования)
     int plan[5][3] = {0};                  // План расположения парт в классе
     int BuffStNum;                         // Буфер для номера ученика при пересадке
     class Teacher : public Human           // Внутренний класс - учитель
@@ -56,7 +58,9 @@ private:                                   // (ряд, номер парты в 
             int learn;      // Усвоение материала
             int interest;   // Интерес
             int discip;     // Дисциплина
-            void learning(int tchrComm,int tchrCreat,int tchrStrict,int k, int k2);// Происходящее в процессе обучения
+            int fl;
+            void initHints(); // Вычислить начальные значения подсказок состояния уч-в
+            void learning(int disc);// Происходящее в процессе обучения
     };
     Student *students;  // Ученики в классе
 };

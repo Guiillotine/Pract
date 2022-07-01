@@ -19,6 +19,7 @@
 #include "human.h"              // Класс "Человек"
 #include "mybutton.h"
 #include "mylabel.h"
+#include "stopwatch.h"
 
 class QLabel;
 class QPushButton; // Объявление класса для создания виджета-кнопки
@@ -42,10 +43,12 @@ public:
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
-    void Stopwatch();     // Секундомер
-    void ChangeHints();   // Менять значение подсказок
+    //void Stopwatch();     // Секундомер
+    void LessonTime();    // Отсчёт времени урока
     void BfrLsn();        // Вид экрана до начала урока
     void BeginLsn();      // Начать урок
+    void DuringLsn();     // Происходящее во время урока
+    void ChangeHints();   // Менять значение подсказок
     void Pause();         // Пауза
     void tcherGoes();     // Учитель идет
     void DeleteAllDesks();// Удалить все парты
@@ -66,7 +69,7 @@ private:
     QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
     QPixmap statKind,statNorm,statEvil; // Символические картинки - подсказки состояния ученика
     QPalette palette;                   // Для установки заднего фона окна
-    QTimer *timer,*timerDrag,*timer2,*timerHints;// Таймеры
+    QTimer *timer,*timerDrag,*timer2,*timerLsn;// Таймеры
     QTime  *time;                       // Время
     QPoint *point1,*point2,*pointDel;   // Координаты центра некоторых label
     QLabel *labMinutes, *labSeconds, *labStWtch; // Под минуты, секунды секундомера и надпись
@@ -77,11 +80,12 @@ private:
     QLabel *labDiscip;                  // Дисциплина учеников
     MyLabel *labMenu1, *labMenu2,*labDelete;// Пункты меню: одноместная, двухместная парты, удаление
     QLabel *labCounter;                     // Оставшееся доступное кол-во парт для размещения
-    MyLabel *labTcher;                                  // Учитель
-    QLabel *labBoard;                                  // Школьная доска
+    MyLabel *labTcher;                              // Учитель
+    QLabel *labBoard;                               // Школьная доска
     MyButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
     MyButton *bPause,*bFinLsn;                      // Кнопки меню во время урока
     QComboBox *cmbbox;
+    Stopwatch *stwtch;
 signals:
     void sig(ClassRoom*,int);
     void sigTcher(ClassRoom*);
