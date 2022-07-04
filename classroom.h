@@ -25,6 +25,11 @@ public:
     int getStLearn(int numberSt);
     int getStInterest(int numberSt);
     int getStDiscip(int numberSt);
+    int getStfDiscip(int numberSt);
+    void setStfDiscip(int numberSt);
+    int getStfIntrst(int numberSt);
+    void setStfIntrst(int numberSt);
+    void clearStFlags();
     int getBuffStNum();
     int MaxNegSearch(); // Поиск ученика с максимальным уровнем негатива
     void SetTeatcher(QString fio,int health,int communication, int creativity, int strictness);
@@ -56,13 +61,16 @@ private:                                   // (ряд, номер парты в 
             int humanit;    // Склонность к гуманитарным наукам
             int technical;  // Склонность к техническим наукам
             int ruffian;    // Нарушение дисциплины
-            float learn;    // Усвоение материала
+            double learn;      // Усвоение материала
             int interest;   // Интерес
             int discip;     // Дисциплина
-            int fl;
+            int fDiscip;    // Злился ли ученик
+            int fIntrst;    // Был ли ученик заинтересован
             void initHints(); // Вычислить начальные значения подсказок состояния уч-в
-            void addNegative(int disc);// Увеличение негатива у ученика
+            void addNegative(int disc);   // Увеличение негатива у ученика
             void subNegative(int deskNum);// Снижение негатива у ученика в зависимости от близости к учителю
+            void addLearn();
+            void changeIntrst(int creat,int hum,int tech);// Изменить степень заинтересованности ученика уроком
     };
     Student *students;  // Ученики в классе
 };

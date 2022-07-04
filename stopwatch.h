@@ -14,6 +14,7 @@ public slots:
     void incMin();
     void FormatTime();
     int getMinutes();
+    int getSeconds();
 private:
     QTimer *timer;  // Адрес таймера
     QLabel *labMin; // Для хранения адресов

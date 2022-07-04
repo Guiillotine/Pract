@@ -40,6 +40,7 @@ public:
     void ShowHints();                           // Показать символы-подсказки состояния учеников на экране
     void Show1deskLab(int deskNum); // Показать одноместную парту
     void Show2deskLab(int deskNum); // Показать двухместную парту
+    void ShowResultWin();
     QScrollArea *scrollArea;
 public slots:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -54,6 +55,7 @@ public slots:
     void DeleteAllDesks();// Удалить все парты
     void on_bDel_clicked();
     void on_bExit_clicked();
+    void on_bFinLsn_clicked();
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *m_player;

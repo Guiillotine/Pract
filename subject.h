@@ -9,9 +9,11 @@ public:
     Subject();
     ~Subject();
     QString getName();
-    void setName(QString SubjName);
+    void setSubj(QString SubjName);
     void showBlackboard(QLabel *lab);
     QString getSubject(int number);
+    int getHumanit();    // Содержание гуманитарных наук в предмете
+    int getTechnical();  // Содержание технических наук в предмете
     int getSbjNmbr();
 private:
     QString name;

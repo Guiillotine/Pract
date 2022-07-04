@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer2, SIGNAL(timeout()),this, SLOT(tcherGoes()));  // Связать таймер 2 со слотом
     time = new QTime(0,0,0);
 
-    //************Картинки*************
+    //************Картинки**************
     icon.addFile(":/images/icon.ico");blank.addFile(":/images/Blank.ico");
     crossOn.load(":/images/crossGr.png");crossOff.load(":/images/cross.png");
     desk1.load(":/images/deskOne.png");desk2.load(":/images/desk.png");
@@ -131,7 +131,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Закончить урок
     bFinLsn = new MyButton(this,"Закончить урок");
     bFinLsn->SetPos(720, 862);
-    connect(bFinLsn, SIGNAL (clicked()),this, SLOT (BfrLsn()));
+    connect(bFinLsn, SIGNAL (clicked()),this, SLOT (on_bFinLsn_clicked()));
     //*******Секундомер*********
     stwtch = new Stopwatch(timer,labMinutes,labSeconds); // Секундомер
     connect(timer, &QTimer::timeout, [=]() {LessonTime();});
@@ -282,14 +282,52 @@ return false;
 
 void MainWindow::LessonTime()
 {
+    /*static int a = 0;
+    a++;
+    labMenu1->show();
+    labMenu1->setText(QString::number(a))
+    labMenu2->show();
+    int min = labMinutes->text().toInt();
+    int sec = (labSeconds->text()).remove(0,1).toInt();
+    labMenu2->setText(QString::number(min)+" "+QString::number(sec));*/
+
     stwtch->Start();
     if (stwtch->getMinutes() == 40)
     {
-        timer->stop();
+        ShowResultWin();
         BfrLsn();
     }
 
 }
+
+void MainWindow::ShowResultWin()
+{
+    int rezLearn = 0,rezDiscip = 0,rezIntrst = 0;
+    int numberStudents = 0;
+    QString str = "";
+    for (int k = 0; k<30; k++)
+        {
+            if (classRoom->getStSex(k)!="")
+            {
+                rezLearn+=classRoom->getStLearn(k);
+                if (classRoom->getStfDiscip(k)) rezDiscip++;
+                if (classRoom->getStfIntrst(k)) rezIntrst++;
+                numberStudents++;
+            }
+        }
+    rezLearn/=(100 * numberStudents);
+    rezLearn = rezLearn*(2400/(stwtch->getMinutes()*60+stwtch->getSeconds()));
+    str+= "Усвоенный за урок материал в среднем: " + QString::number(rezLearn) + "%\n\nУчеников, заинтересовавшихся уроком: "+ QString::number(rezIntrst) + "\n\nУчеников, испытавших отрицательные эмоции: "+ QString::number(rezDiscip);
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("  Результаты работы за урок");
+    msgBox.setIcon(QMessageBox::NoIcon);
+    msgBox.setText(str);
+    msgBox.setWindowIcon(blank);
+    timer->stop();     // Остановить секундомер
+    timerLsn->stop();  // Остановить действия во время урока
+    msgBox.exec();
+}
+
 
 void MainWindow::EditClass(int row, int number)
 {
@@ -358,7 +396,7 @@ void MainWindow::ShowHints()
                 else if (classRoom->getStRuffian(k) < 30) (labSymbols+k)->setPixmap(statKind);
                 else
                 (labSymbols+k)->setPixmap(statNorm);
-                (labLearn+k)->setText(QString::number(classRoom->getStLearn(k))+"%");
+                (labLearn+k)->setText(QString::number(classRoom->getStLearn(k)/100)+"%");
                 (labInterest+k)->setText(QString::number(classRoom->getStInterest(k))+"%");
                 (labDiscip+k)->setText(QString::number(classRoom->getStRuffian(k))+"%");
                 (labSymbols+k)->setGeometry(142+i*160,315+j*100,wdth,hght);
@@ -382,13 +420,12 @@ void MainWindow::ShowHints()
                 (labLearn+k+1)->setParent(this);
                 (labInterest+k+1)->setParent(this);
                 (labDiscip+k+1)->setParent(this);
-                classRoom->StLearning(k+1);
                 // Смайлик в зависимости от склонности к нарушению дисциплины
                 if (classRoom->getStRuffian(k+1) >= 70)(labSymbols+k+1)->setPixmap(statEvil);
                 else if (classRoom->getStRuffian(k+1) < 30) (labSymbols+k+1)->setPixmap(statKind);
                 else
                 (labSymbols+k+1)->setPixmap(statNorm);
-                (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1))+"%");
+                (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)/100)+"%");
                 (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1))+"%");
                 (labDiscip+k+1)->setText(QString::number(classRoom->getStRuffian(k+1))+"%");
                 (labSymbols+k+1)->setGeometry(142+i*160+55,315+j*100,wdth,hght);
@@ -422,6 +459,8 @@ void MainWindow::Show2deskLab(int deskNum)
     else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
     else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
 }
+
+
 
 // Вид экрана до начала урока
 void MainWindow::BfrLsn()
@@ -498,9 +537,9 @@ void MainWindow::BeginLsn()
     bExit->hide();
     bFinLsn->show();
     bPause->show();
-    //labBoard->show();
-    classRoom->subject->setName(cmbbox->currentText());
+    classRoom->subject->setSubj(cmbbox->currentText());
     classRoom->subject->showBlackboard(labBoard);
+    classRoom->clearStFlags();
     for (int i = 0, j = 0, k = 0; k < 15; i++, k++)
             {
                 if (i == 3) {i = 0; j++;}
@@ -523,6 +562,12 @@ void MainWindow::BeginLsn()
 // Происходящее во время урока
 void MainWindow::DuringLsn()
 {
+    static int a = 0;
+    a++;
+    /*labMenu1->show();
+    labMenu1->setText(QString::number(a));*/
+
+
     for (int i = 0, j = 0, k = 0; k < 30; i++, k+=2)
     {
         if (i == 3) {i = 0; j++;}
@@ -537,13 +582,31 @@ void MainWindow::DuringLsn()
 // Изменение значения показателей деят-ности ученика в подсказках
 void MainWindow::ChangeHints()
 {
+    int min = 0, sec = 0;
+    //static int counter = 0;
+    //counter++;
     for (int i = 0, j = 0, k = 0; k < 30; i++, k+=2)
     {
                 if (i == 3) {i = 0; j++;}
                 if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
                 {
                     int dis = classRoom->getStDiscip(k);
-                    (labLearn+k)->setText(QString::number(classRoom->getStLearn(k)) + "%");
+                    float lrnng = classRoom->getStLearn(k)/100;
+
+                    min = labMinutes->text().toInt();
+                    sec = (labSeconds->text()).remove(0,1).toInt();
+
+                    /*labMenu1->show();
+                    labMenu1->setText(QString::number(min)+" "+QString::number(sec));*/
+
+                    double xa,ya,l;
+                    l = classRoom->getStLearn(k);
+                    xa = (min*60+sec)/24; // Время
+                    ya = l/100.0;
+                    lrnng=100.0*(ya/xa);
+                    if (lrnng>100) lrnng = 100;
+                    int ll = lrnng;
+                    (labLearn+k)->setText(QString::number(ll) + "%");
                     (labInterest+k)->setText(QString::number(classRoom->getStInterest(k)) + "%");
                     (labDiscip+k)->setText(QString::number(dis) + "%");
                     if (dis < 30) (labSymbols+k)->setPixmap(statKind);
@@ -553,7 +616,7 @@ void MainWindow::ChangeHints()
                 if (classRoom->GetPlan(i+1,j+1) == 2)
                 {
                     int dis = classRoom->getStDiscip(k+1);
-                    (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)) + "%");
+                    (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)/100) + "%");
                     (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1)) + "%");
                     (labDiscip+k+1)->setText(QString::number(dis) + "%");
                     if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
@@ -615,13 +678,11 @@ if(f)
     frame++;
     if (frame == 7) frame = 1;
     labTcher->setPos(x,150);
-    //labTcher->setGeometry(x,150,tcher1.width(),tcher1.height());
     x-=5;
     if (x == 350) // Дошла до стула
     {
         labTcher->setPixmap(tcherSits);
         labTcher->setPos(343,157);
-        //labTcher->setGeometry(343,157,tcherSits.width(),tcherSits.height());
         bFinLsn->setEnabled(true);
         bPause->setEnabled(true);
         timer2->stop();   // Отключение таймера по достижении объектом нужной точки на экране
@@ -669,6 +730,12 @@ void MainWindow::on_bExit_clicked()
     msgBox.exec();
     if(msgBox.clickedButton() == yes) {scrollArea->close();}
     else if(msgBox.clickedButton() == no)  msgBox.close();
+}
+
+void MainWindow::on_bFinLsn_clicked()
+{
+    ShowResultWin();
+    BfrLsn();
 }
 
 void MainWindow::DeleteAllDesks()

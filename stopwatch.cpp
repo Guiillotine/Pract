@@ -50,3 +50,8 @@ int Stopwatch::getMinutes()
 {
     return min;
 }
+
+int Stopwatch::getSeconds()
+{
+    return sec;
+}

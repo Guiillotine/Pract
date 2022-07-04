@@ -22,13 +22,33 @@ QString Subject::getName()
     return name;
 }
 
-void Subject::setName(QString SubjName)
+void Subject::setSubj(QString SubjName)
 {
     for (int i = 0; i < subjNmbr; i++)
     {
         if (subjects[i] == SubjName)
         {
-            name = SubjName;
+            name = SubjName; // Математика
+            if (i == 0)
+            {
+                technical = 100;
+                humanit = 0;
+            }
+            if (i == 1) // Русский язык
+            {
+                technical = 0;
+                humanit = 100;
+            }
+            if (i == 2) // История
+            {
+                technical = 30;
+                humanit = 70;
+            }
+            if (i == 3) // География
+            {
+                technical = 50;
+                humanit = 50;
+            }
             return;
         }
     }
@@ -44,6 +64,16 @@ QString Subject::getSubject(int number)
 {
     if ((number >= 0)&&(number < subjNmbr))
         return subjects[number];
+}
+
+int Subject::getHumanit()
+{
+    return humanit;
+}
+
+int Subject::getTechnical()
+{
+    return technical;
 }
 
 int Subject::getSbjNmbr()

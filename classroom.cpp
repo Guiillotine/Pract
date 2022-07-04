@@ -36,14 +36,15 @@ ClassRoom::Student::Student()
     learn = 0;     // Усвоение материала
     interest = 50; // Интерес
     discip = 50;   // Дисциплина
-    fl = 1;
-    //discip  = rand() % 100;
+    fDiscip = 0;   // Злился ли ученик
+    fIntrst = 0;   // Был ли ученик заинтересован
 }
 
 void ClassRoom::Student::initHints()
 {
+    if (interest > 100) interest = 100;
     learn = 0;
-    interest = 0;
+    //interest = 0;
     discip = ruffian;
 }
 
@@ -59,7 +60,6 @@ void ClassRoom::Student::addNegative(int disc)
         discip = discip + ((disc - discip)/5)*(ruf/50);
     }
     if (discip > 100) discip = 100;
-
 }
 
 void ClassRoom::Student::subNegative(int deskNum)
@@ -67,6 +67,53 @@ void ClassRoom::Student::subNegative(int deskNum)
     int place = deskNum/3; // Номер места в ряду
     discip = discip - (25 - place*5); // Чем дальше от учителя, тем меньше его влияние
     if (discip < 40) discip = 40;
+}
+
+void ClassRoom::Student::addLearn()
+{
+    double maxLearn = 41.666666667;
+    maxLearn = maxLearn - (100-health)/5;
+
+    //maxLearn = maxLearn - discip/7;
+
+    //maxLearn = maxLearn - discip/7;
+    // Начиная с 70 негатив начинает влиять на успеваемость
+
+    /*if (discip>70) maxLearn-=10;
+    if (discip>90) maxLearn-=20;
+    if (health<50) maxLearn-=10;
+    if (health<20) maxLearn-=20;
+    if (health<20) maxLearn-=20;
+    if (health<20) maxLearn-=20;*/
+
+    if (maxLearn<0) maxLearn=0;
+    learn+=maxLearn;
+    if (learn > 10000) learn = 10000;
+}
+
+void ClassRoom::Student::changeIntrst(int creat, int hum,int tech)
+{
+    if ((hum==0)&&(tech==100))// Математика
+    {
+        interest = technical;
+    }
+    if ((hum==100)&&(tech==0))// Русский язык
+    {
+        interest = humanit;
+    }
+    if ((hum==70)&&(tech==30))// История
+    {
+        interest = (humanit*70 + technical*30)/100;
+    }
+    if ((hum==50)&&(tech==50))// География
+    {
+        interest = (humanit*50 + technical*50)/100;
+    }
+    interest = interest + creat/4; // Креативность учителя положительно влияет на интерес ученика
+    interest = interest - (99-health)/3; // Если ученик плохо себя чувствует, интерес снизится
+    //interest = interest + creat/4 - (99-health)/3; // Креативность учителя положительно влияет на интерес ученика, а плохое самочувствие ученика снижает интерес
+    if (interest > 100) interest = 100;
+    if (interest < 0) interest = 0;
 }
 
 void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
@@ -83,8 +130,6 @@ void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, in
     (students+numberSt)->humanit = humanit;
     (students+numberSt)->technical = technical;
     (students+numberSt)-> ruffian = ruffian;
-    //StInitHints(numberSt);
-    //(students+numberSt)->discip = ruffian;
 }
 
 void ClassRoom::setHints(int numberSt, int learn, int interest, int discip)
@@ -97,7 +142,6 @@ void ClassRoom::setHints(int numberSt, int learn, int interest, int discip)
 void ClassRoom::CopySt(int numberSt) // Скопировать данные указанного ученика в конец массива учеников (буфер)
 {
     setStudent(30, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
-    //setHints(30, getStLearn(numberSt), getStInterest(numberSt), getStDiscip(numberSt));
     BuffStNum = numberSt;
 }
 
@@ -133,9 +177,13 @@ void ClassRoom::StLearning(int numberSt)
     int st = teatcher->strictness;
     int cr = teatcher->creativity;
     int com = teatcher->communication;
-    // Чем больше склонность к нарушению дисциплины, тем больше вероятность совершения проступка
-    //if ((rand() % (500/((students+numberSt)->ruffian+1)) == 12)&&((students+numberSt)->ruffian > 50)) fEvil = 1;
+    int tHlth = teatcher->health;
+    // Все способности учителя зависят от его здоровья
+    st= st - (99-tHlth)/3;
+    cr= cr - (99-tHlth)/3;
+    com = com - (99-tHlth)/3;
 
+    // Чем больше склонность к нарушению дисциплины, тем больше вероятность совершения проступка
     if ((rand() % 20 == 12)&&(((students+numberSt)->ruffian > 50))||((students+numberSt)->discip >= 90))  fEvil = 1;
     if ((rand() % 20 == 12)&&((students+numberSt)->ruffian >= 80)) fEvil = 1; // Увеличить вероятность в 2 раза
 
@@ -151,8 +199,8 @@ void ClassRoom::StLearning(int numberSt)
         if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
     }
 
-
     if (fEvil) (students+numberSt)->addNegative((students+numberSt)->discip+50);
+    if ((students+numberSt)->discip >= 70) setStfDiscip(numberSt); // Злился ли ученик
 
     if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
     {
@@ -170,6 +218,9 @@ void ClassRoom::StLearning(int numberSt)
     {
         if (fEvil) (students+(x*3+(y-1))*2)->addNegative((students+numberSt)->discip);
     }
+    (students+numberSt)->addLearn(); // Усвоение урока
+    (students+numberSt)->changeIntrst(cr,subject->getHumanit(),subject->getTechnical());
+    if ((students+numberSt)->interest >= 50) setStfIntrst(numberSt); // Был ли ученик заинтересован уроком
 
     /*QString str = QString::number(numberDsk) + " ";
     for(int i = 0; i < 8; i++)
@@ -186,6 +237,7 @@ void ClassRoom::StLearning(int numberSt)
 
 void ClassRoom::StInitHints(int numberSt)
 {
+    (students+numberSt)->changeIntrst(teatcher->creativity,subject->getHumanit(),subject->getTechnical());
     (students+numberSt)->initHints();
 }
 
@@ -237,6 +289,35 @@ int ClassRoom::getStInterest(int numberSt)
 int ClassRoom::getStDiscip(int numberSt)
 {
     return (students+numberSt)->discip;
+}
+
+int ClassRoom::getStfDiscip(int numberSt)
+{
+    return (students+numberSt)->fDiscip;
+}
+
+void ClassRoom::setStfDiscip(int numberSt)
+{
+    (students+numberSt)->fDiscip = 1;
+}
+
+int ClassRoom::getStfIntrst(int numberSt)
+{
+    return (students+numberSt)->fIntrst;
+}
+
+void ClassRoom::setStfIntrst(int numberSt)
+{
+    (students+numberSt)->fIntrst = 1;
+}
+
+void ClassRoom::clearStFlags()
+{
+    for (int i = 0; i < 30; i++)
+    {
+        (students+i)->fDiscip = 0;
+        (students+i)->fIntrst = 0;
+    }
 }
 
 int ClassRoom::getBuffStNum()
