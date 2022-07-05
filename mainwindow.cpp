@@ -577,23 +577,20 @@ void MainWindow::DuringLsn()
 void MainWindow::ChangeHints()
 {
     int min = 0, sec = 0;
-    //static int counter = 0;
-    //counter++;
+    int dis;
+    double xa,ya,l;
+    double lrnng;
     for (int i = 0, j = 0, k = 0; k < 30; i++, k+=2)
     {
                 if (i == 3) {i = 0; j++;}
                 if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
                 {
-                    int dis = classRoom->getStDiscip(k);
-                    double lrnng = classRoom->getStLearn(k)/100;
+                    dis = classRoom->getStDiscip(k);
+                    lrnng = classRoom->getStLearn(k)/100;
 
                     min = labMinutes->text().toInt();
                     sec = (labSeconds->text()).remove(0,1).toInt();
 
-                    /*labMenu1->show();
-                    labMenu1->setText(QString::number(min)+" "+QString::number(sec));*/
-
-                    double xa,ya,l;
                     l = classRoom->getStLearn(k);
                     xa = (min*60+sec)/24+1; // Время
                     ya = l/100.0;
@@ -609,13 +606,32 @@ void MainWindow::ChangeHints()
                 }
                 if (classRoom->GetPlan(i+1,j+1) == 2)
                 {
-                    int dis = classRoom->getStDiscip(k+1);
-                    (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)/100) + "%");
+                    dis = classRoom->getStDiscip(k+1);
+                    lrnng = classRoom->getStLearn(k+1)/100;
+
+                    min = labMinutes->text().toInt();
+                    sec = (labSeconds->text()).remove(0,1).toInt();
+
+                    l = classRoom->getStLearn(k+1);
+                    xa = (min*60+sec)/24+1; // Время
+                    ya = l/100.0;
+                    lrnng=100.0*(ya/xa);
+                    if (lrnng>100) lrnng = 100;
+                    int ll = lrnng;
+                    (labLearn+k+1)->setText(QString::number(ll) + "%");
                     (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1)) + "%");
                     (labDiscip+k+1)->setText(QString::number(dis) + "%");
                     if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
                     else if (dis >= 70) (labSymbols+k+1)->setPixmap(statEvil);
                     else (labSymbols+k+1)->setPixmap(statNorm);
+
+                    /*dis = classRoom->getStDiscip(k+1);
+                    (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)/100) + "%");
+                    (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1)) + "%");
+                    (labDiscip+k+1)->setText(QString::number(dis) + "%");
+                    if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
+                    else if (dis >= 70) (labSymbols+k+1)->setPixmap(statEvil);
+                    else (labSymbols+k+1)->setPixmap(statNorm);*/
                 }
     }
 }

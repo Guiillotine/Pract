@@ -69,7 +69,7 @@ private:                                   // (ряд, номер парты в 
             void initHints(); // Вычислить начальные значения подсказок состояния уч-в
             void addNegative(int disc);   // Увеличение негатива у ученика
             void subNegative(int deskNum);// Снижение негатива у ученика в зависимости от близости к учителю
-            void addLearn();
+            void addLearn(int deskNum,int comm);
             void changeIntrst(int creat,int hum,int tech);// Изменить степень заинтересованности ученика уроком
     };
     Student *students;  // Ученики в классе

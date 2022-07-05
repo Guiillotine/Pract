@@ -64,8 +64,9 @@ void ClassRoom::Student::subNegative(int deskNum)
     if (discip < 40) discip = 40;
 }
 
-void ClassRoom::Student::addLearn()
+void ClassRoom::Student::addLearn(int deskNum,int comm)
 {
+    int place = deskNum/3; // Номер места в ряду
     double maxLearn = 41.666666667;
     maxLearn = maxLearn - (99-health)/5;
 
@@ -76,9 +77,13 @@ void ClassRoom::Student::addLearn()
 
     if (concentr>55) maxLearn = maxLearn + (concentr-55)/2;  // Способность к концентрации > среднего - положительное влияние на успеваемость
     if (interest>55) maxLearn+= (interest-55)/2;             // Если ученик заинтересован уроком, это положительно влияет на успеваемость
+    if (comm>55) maxLearn+= ((comm-55)/2);                   // Если учитель обладает хорошими коммуникативными способностями - полож. влияние на успеваемость (+ завис.от места)
     if (maxLearn > 41.666666667) maxLearn = 41.666666667;
     if (concentr<45) maxLearn = maxLearn - (45 - concentr)/2;// Если сп. к конц. < среднего - отрицательное влияние
     if (interest<45) maxLearn-= (45 - interest)/2;           // Если ученик не заинтересован уроком - отрицательное влияние
+    if (comm<45) maxLearn = maxLearn - (45 - comm)/2;        // Если учитель не обладает коммуникативными способностями - отр. влияние
+
+    maxLearn = maxLearn - place*2; // Чем дальше от учителя, тем хуже усваиваются знания
 
     if (maxLearn<0) maxLearn=0;
     learn+=maxLearn;
@@ -214,7 +219,7 @@ void ClassRoom::StLearning(int numberSt)
     }
     (students+numberSt)->changeIntrst(cr,subject->getHumanit(),subject->getTechnical());
     if ((students+numberSt)->interest >= 50) setStfIntrst(numberSt); // Был ли ученик заинтересован уроком
-    (students+numberSt)->addLearn(); // Усвоение урока
+    (students+numberSt)->addLearn(numberDsk,com); // Усвоение урока
 
     /*QString str = QString::number(numberDsk) + " ";
     for(int i = 0; i < 8; i++)
