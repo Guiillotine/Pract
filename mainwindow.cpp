@@ -722,7 +722,7 @@ void MainWindow::on_bDel_clicked()
          for (int i = 0, j = 0, k = 0; k < 30; i++, k++)
                  { // Удалить данные всех учеников
                      if (i == 3) {i = 0; j++;}
-                     classRoom->setStudent(k,"Ученик","",100,50,50,50,0);
+                     classRoom->setStudent(k,"Ученик","",100,50,50,50,50);
                  }
      }
      else if(msgBox.clickedButton() == no)  msgBox.close();

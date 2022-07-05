@@ -110,6 +110,7 @@ void ClassRoom::Student::changeIntrst(int creat, int hum,int tech)
     }
     interest = interest + creat/4; // Креативность учителя положительно влияет на интерес ученика
     interest = interest - (99-health)/3;  // Если ученик плохо себя чувствует, интерес снизится
+    if (ruffian >= 50) interest-=20; // Склонным к нарушению дисциплины сложнее проявлять интерес
     if (discip>=70) interest -= discip-50;// Если ученик ощущает негатив, интерес снизится
     if (interest > 100) interest = 100;
     if (interest < 0) interest = 0;
@@ -164,7 +165,7 @@ void ClassRoom::PasteSt(int numberSt) // Скопировать данные и�
 
 void ClassRoom::DelSt(int numberSt)
 {
-    setStudent(numberSt,"Ученик","",100,50,50,50,0);
+    setStudent(numberSt,"Ученик","",100,50,50,50,50);
 }
 
 void ClassRoom::StLearning(int numberSt)
@@ -178,8 +179,8 @@ void ClassRoom::StLearning(int numberSt)
     int com = teatcher->communication;
     int tHlth = teatcher->health;
     // Все способности учителя зависят от его здоровья
-    st= st - (99-tHlth)/3;
-    cr= cr - (99-tHlth)/3;
+    st = st - (99-tHlth)/3;
+    cr = cr - (99-tHlth)/3;
     com = com - (99-tHlth)/3;
 
     // Чем больше склонность к нарушению дисциплины, тем больше вероятность совершения проступка
@@ -201,22 +202,47 @@ void ClassRoom::StLearning(int numberSt)
     if (fEvil) (students+numberSt)->addNegative((students+numberSt)->discip+50);
     if ((students+numberSt)->discip >= 70) setStfDiscip(numberSt); // Злился ли ученик
 
+    if ((getStSex(numberSt+1)!="")&&(numberSt%2 == 0)) // Если есть сосед по парте справа
+        if (fEvil) (students+(numberSt+1))->addNegative((students+numberSt)->discip+10);
+    if (numberSt%2) // Если есть сосед по парте слева
+        if (fEvil) (students+(numberSt-1))->addNegative((students+numberSt)->discip+10);
+
     if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
-    {
-        if (fEvil) (students+((x-1)*3+y)*2)->addNegative((students+numberSt)->discip);
-    }
+        if (fEvil)
+        {
+            int n = ((x-1)*3+y)*2;
+            (students+n)->addNegative((students+numberSt)->discip);
+            if (getStSex(n+1)!="")
+                (students+n+1)->addNegative((students+numberSt)->discip);
+        }
     if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
-    {
-        if (fEvil) (students+((x+1)*3+y)*2)->addNegative((students+numberSt)->discip);
-    }
+        if (fEvil)
+        {
+            int n = ((x+1)*3+y)*2;
+            (students + n)->addNegative((students+numberSt)->discip);
+            if (getStSex(n+1)!="")
+                (students+n+1)->addNegative((students+numberSt)->discip);
+        }
     if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
-    {
-        if (fEvil) (students+(x*3+(y+1))*2)->addNegative((students+numberSt)->discip);
-    }
+        if (fEvil)
+        {
+            int n = (x*3+(y+1))*2;
+            (students+n)->addNegative((students+numberSt)->discip);
+            if (getStSex(n+1)!="")
+            {
+                (students+n+1)->addNegative((students+numberSt)->discip);
+            }
+        }
     if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
-    {
-        if (fEvil) (students+(x*3+(y-1))*2)->addNegative((students+numberSt)->discip);
-    }
+        if (fEvil)
+        {
+            int n = (x*3+(y-1))*2;
+            (students+n)->addNegative((students+numberSt)->discip);
+            if (getStSex(n+1)!="")
+            {
+                (students+n+1)->addNegative((students+numberSt)->discip);
+            }
+        }
     (students+numberSt)->changeIntrst(cr,subject->getHumanit(),subject->getTechnical());
     if ((students+numberSt)->interest >= 50) setStfIntrst(numberSt); // Был ли ученик заинтересован уроком
     (students+numberSt)->addLearn(numberDsk,com); // Усвоение урока

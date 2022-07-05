@@ -204,19 +204,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="bCancel">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>370</y>
-     <width>51</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Отмена</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="bOk">
    <property name="geometry">
     <rect>
@@ -228,6 +215,19 @@
    </property>
    <property name="text">
     <string>Ок</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bCancel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>370</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Отмена</string>
    </property>
   </widget>
  </widget>
