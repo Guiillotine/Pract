@@ -44,16 +44,11 @@ void ClassRoom::Student::initHints()
 {
     if (interest > 100) interest = 100;
     learn = 0;
-    //interest = 0;
     discip = ruffian;
 }
 
 void ClassRoom::Student::addNegative(int disc)
 {
-    //learn = 0;//rand() % 100;
-    //interest = 0;//rand() % 100;
-    //int a = rand() % 5;
-    //if (a == 1) fl = 1;
     float ruf = ruffian;
     if ((disc > discip)&&(discip < 100))
     {
@@ -72,19 +67,18 @@ void ClassRoom::Student::subNegative(int deskNum)
 void ClassRoom::Student::addLearn()
 {
     double maxLearn = 41.666666667;
-    maxLearn = maxLearn - (100-health)/5;
+    maxLearn = maxLearn - (99-health)/5;
 
-    //maxLearn = maxLearn - discip/7;
+    int tmp = discip/70;
+    maxLearn = maxLearn - tmp*10;   // Начиная с 70 негатив начинает влиять на успеваемость
+    if (discip>=80) maxLearn-=10;   // Дополнительно отнять 10, если негатив превышает 80
+    if (discip>=90) maxLearn-=10;   // Дополнительно отнять 10, если негатив превышает 90
 
-    //maxLearn = maxLearn - discip/7;
-    // Начиная с 70 негатив начинает влиять на успеваемость
-
-    /*if (discip>70) maxLearn-=10;
-    if (discip>90) maxLearn-=20;
-    if (health<50) maxLearn-=10;
-    if (health<20) maxLearn-=20;
-    if (health<20) maxLearn-=20;
-    if (health<20) maxLearn-=20;*/
+    if (concentr>55) maxLearn = maxLearn + (concentr-55)/2;  // Способность к концентрации > среднего - положительное влияние на успеваемость
+    if (interest>55) maxLearn+= (interest-55)/2;             // Если ученик заинтересован уроком, это положительно влияет на успеваемость
+    if (maxLearn > 41.666666667) maxLearn = 41.666666667;
+    if (concentr<45) maxLearn = maxLearn - (45 - concentr)/2;// Если сп. к конц. < среднего - отрицательное влияние
+    if (interest<45) maxLearn-= (45 - interest)/2;           // Если ученик не заинтересован уроком - отрицательное влияние
 
     if (maxLearn<0) maxLearn=0;
     learn+=maxLearn;
@@ -110,8 +104,8 @@ void ClassRoom::Student::changeIntrst(int creat, int hum,int tech)
         interest = (humanit*50 + technical*50)/100;
     }
     interest = interest + creat/4; // Креативность учителя положительно влияет на интерес ученика
-    interest = interest - (99-health)/3; // Если ученик плохо себя чувствует, интерес снизится
-    //interest = interest + creat/4 - (99-health)/3; // Креативность учителя положительно влияет на интерес ученика, а плохое самочувствие ученика снижает интерес
+    interest = interest - (99-health)/3;  // Если ученик плохо себя чувствует, интерес снизится
+    if (discip>=70) interest -= discip-50;// Если ученик ощущает негатив, интерес снизится
     if (interest > 100) interest = 100;
     if (interest < 0) interest = 0;
 }
@@ -218,9 +212,9 @@ void ClassRoom::StLearning(int numberSt)
     {
         if (fEvil) (students+(x*3+(y-1))*2)->addNegative((students+numberSt)->discip);
     }
-    (students+numberSt)->addLearn(); // Усвоение урока
     (students+numberSt)->changeIntrst(cr,subject->getHumanit(),subject->getTechnical());
     if ((students+numberSt)->interest >= 50) setStfIntrst(numberSt); // Был ли ученик заинтересован уроком
+    (students+numberSt)->addLearn(); // Усвоение урока
 
     /*QString str = QString::number(numberDsk) + " ";
     for(int i = 0; i < 8; i++)

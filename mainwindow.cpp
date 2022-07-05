@@ -282,22 +282,12 @@ return false;
 
 void MainWindow::LessonTime()
 {
-    /*static int a = 0;
-    a++;
-    labMenu1->show();
-    labMenu1->setText(QString::number(a))
-    labMenu2->show();
-    int min = labMinutes->text().toInt();
-    int sec = (labSeconds->text()).remove(0,1).toInt();
-    labMenu2->setText(QString::number(min)+" "+QString::number(sec));*/
-
     stwtch->Start();
     if (stwtch->getMinutes() == 40)
     {
         ShowResultWin();
         BfrLsn();
     }
-
 }
 
 void MainWindow::ShowResultWin()
@@ -305,19 +295,23 @@ void MainWindow::ShowResultWin()
     int rezLearn = 0,rezDiscip = 0,rezIntrst = 0;
     int numberStudents = 0;
     QString str = "";
+    QString str2;
     for (int k = 0; k<30; k++)
         {
             if (classRoom->getStSex(k)!="")
             {
-                rezLearn+=classRoom->getStLearn(k);
+                str2 = (labLearn+k)->text();
+                str2.resize(str2.size()-1);
+                rezLearn+= str2.toInt();
                 if (classRoom->getStfDiscip(k)) rezDiscip++;
                 if (classRoom->getStfIntrst(k)) rezIntrst++;
                 numberStudents++;
             }
         }
-    rezLearn/=(100 * numberStudents);
-    rezLearn = rezLearn*(2400/(stwtch->getMinutes()*60+stwtch->getSeconds()));
-    str+= "Усвоенный за урок материал в среднем: " + QString::number(rezLearn) + "%\n\nУчеников, заинтересовавшихся уроком: "+ QString::number(rezIntrst) + "\n\nУчеников, испытавших отрицательные эмоции: "+ QString::number(rezDiscip);
+    rezLearn/=numberStudents;
+    rezIntrst=(rezIntrst*100)/numberStudents;
+    rezDiscip=(rezDiscip*100)/numberStudents;
+    str+= "Усвоенный за урок материал в среднем: " + QString::number(rezLearn) + "%\n\nПроявивших интерес к уроку: "+ QString::number(rezIntrst) + "%\n\nИспытавших отрицательные эмоции: "+ QString::number(rezDiscip)+"%";
     QMessageBox msgBox;
     msgBox.setWindowTitle("  Результаты работы за урок");
     msgBox.setIcon(QMessageBox::NoIcon);
@@ -591,7 +585,7 @@ void MainWindow::ChangeHints()
                 if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
                 {
                     int dis = classRoom->getStDiscip(k);
-                    float lrnng = classRoom->getStLearn(k)/100;
+                    double lrnng = classRoom->getStLearn(k)/100;
 
                     min = labMinutes->text().toInt();
                     sec = (labSeconds->text()).remove(0,1).toInt();
@@ -601,7 +595,7 @@ void MainWindow::ChangeHints()
 
                     double xa,ya,l;
                     l = classRoom->getStLearn(k);
-                    xa = (min*60+sec)/24; // Время
+                    xa = (min*60+sec)/24+1; // Время
                     ya = l/100.0;
                     lrnng=100.0*(ya/xa);
                     if (lrnng>100) lrnng = 100;
