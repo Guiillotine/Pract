@@ -14,7 +14,9 @@ Stopwatch::Stopwatch(QTimer *timer,QLabel *labMinutes,QLabel *labSeconds)
 
 Stopwatch::~Stopwatch()
 {
-
+    delete timer;
+    delete labMin;
+    delete labSec;
 }
 void Stopwatch::Start()
 {

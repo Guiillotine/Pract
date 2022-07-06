@@ -1,9 +1,9 @@
-#include "teatcherwin.h"
-#include "ui_teatcherwin.h"
+#include "teacherwin.h"
+#include "ui_teacherwin.h"
 
-TeatcherWin::TeatcherWin(QWidget *parent) :
+TeacherWin::TeacherWin(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::TeatcherWin)
+    ui(new Ui::TeacherWin)
 {
     ui->setupUi(this);
     setWindowTitle("Характеристики учителя");
@@ -21,31 +21,32 @@ TeatcherWin::TeatcherWin(QWidget *parent) :
     ui->SliderStrict->setSliderPosition(50);
 }
 
-TeatcherWin::~TeatcherWin()
+TeacherWin::~TeacherWin()
 {
     delete ui;
+    delete classR;
 }
 
-void TeatcherWin::PrintToLabel(QSlider *slider, QLabel *lab)
+void TeacherWin::PrintToLabel(QSlider *slider, QLabel *lab)
 {
     lab->setText(QString::number(slider->value()));
 }
 
-void TeatcherWin::FillWin(ClassRoom *cr)
+void TeacherWin::FillWin(ClassRoom *cr)
 {
-    ui->lineEdit->setText(cr->getTchrFio());
-    ui->SliderHealth->setSliderPosition(cr->getTchrHealth());
-    ui->SliderComm->setSliderPosition(cr->getTchrComm());
-    ui->SliderCreat->setSliderPosition(cr->getTchrCreat());
-    ui->SliderStrict->setSliderPosition(cr->getTchrStrict());
+    ui->lineEdit->setText(cr->teacher->getFio());
+    ui->SliderHealth->setSliderPosition(cr->teacher->getHealth());
+    ui->SliderComm->setSliderPosition(cr->teacher->getComm());
+    ui->SliderCreat->setSliderPosition(cr->teacher->getCreat());
+    ui->SliderStrict->setSliderPosition(cr->teacher->getStrict());
     classR = cr;    // Запомнить адрес объекта
 }
 
-void TeatcherWin::on_bOk_clicked()
+void TeacherWin::on_bOk_clicked()
 {
     if (ui->lineEdit->text()!="")
     {   // Заполнить параметры учителя
-        classR->SetTeatcher(ui->lineEdit->text(),ui->SliderHealth->value(),ui->SliderComm->value(),ui->SliderCreat->value(),ui->SliderStrict->value());
+        classR->teacher->SetTeacher(ui->lineEdit->text(),ui->SliderHealth->value(),ui->SliderComm->value(),ui->SliderCreat->value(),ui->SliderStrict->value());
         this->close();   // Закрыть форму
     }
     else
@@ -59,7 +60,7 @@ void TeatcherWin::on_bOk_clicked()
     }
 }
 
-void TeatcherWin::on_bCancel_clicked()
+void TeacherWin::on_bCancel_clicked()
 {
     this->close();
 }

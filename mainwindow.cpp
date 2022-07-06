@@ -175,8 +175,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 if (i == 3) {i = 0; j++;}
                 if (labDelete->x()<(labels+k)->x()+50 && labDelete->x()>(labels+k)->x()-75 && labDelete->y()<(labels+k)->y()+25 && labDelete->y()>(labels+k)->y()-75 && (classRoom->GetPlan(i+1,j+1) != 0))
                 {
-                     classRoom->DelSt(k*2);         // Удалить данные ученика
-                    if (classRoom->GetPlan(i+1,j+1) == 2) classRoom->DelSt(k*2+1); // Удалить данные ученика-соседа
+                    classRoom->students[k*2].DelSt();         // Удалить данные ученика
+                    if (classRoom->GetPlan(i+1,j+1) == 2) classRoom->students[k*2+1].DelSt(); // Удалить данные ученика-соседа
                     classRoom->EditPlan(i+1,j+1,0); // Удалить парту из плана
                     EditClass(i+1,j+1);
                     (labels+k)->setPixmap(crossOff);
@@ -240,8 +240,8 @@ if (!timer->isActive()) //Разреш. редактирование данны�
 {
     if((watched == labTcher)&&(event->type() == QEvent::MouseButtonDblClick))
     {// Окрыть окно ввода данных учителя
-          TeatcherWin *tchrWin = new TeatcherWin();
-          connect(this, &MainWindow::sigTcher,tchrWin, &TeatcherWin::FillWin);
+          TeacherWin *tchrWin = new TeacherWin();
+          connect(this, &MainWindow::sigTcher,tchrWin, &TeacherWin::FillWin);
           emit sigTcher(classRoom);
           tchrWin->setModal(true); // Сделать окно модальным (появляющимся поверх основного и блокирующим его)
           tchrWin->exec();
@@ -306,13 +306,13 @@ void MainWindow::ShowResultWin()
     QString str2;
     for (int k = 0; k<30; k++)
         {
-            if (classRoom->getStSex(k)!="")
+            if (classRoom->students[k].getSex()!="")
             {
                 str2 = (labLearn+k)->text();
                 str2.resize(str2.size()-1);
                 rezLearn+= str2.toInt();
-                if (classRoom->getStfDiscip(k)) rezDiscip++;
-                if (classRoom->getStfIntrst(k)) rezIntrst++;
+                if (classRoom->students[k].getfDiscip()) rezDiscip++;
+                if (classRoom->students[k].getfIntrst()) rezIntrst++;
                 numberStudents++;
             }
         }
@@ -394,13 +394,13 @@ void MainWindow::ShowHints()
                 (labInterest+k)->setParent(this);
                 (labDiscip+k)->setParent(this);
                 // Смайлик в зависимости от склонности к нарушению дисциплины
-                if (classRoom->getStRuffian(k) >= 70)(labSymbols+k)->setPixmap(statEvil);
-                else if (classRoom->getStRuffian(k) < 30) (labSymbols+k)->setPixmap(statKind);
+                if (classRoom->students[k].getRuffian() >= 70)(labSymbols+k)->setPixmap(statEvil);
+                else if (classRoom->students[k].getRuffian() < 30) (labSymbols+k)->setPixmap(statKind);
                 else
                 (labSymbols+k)->setPixmap(statNorm);
-                (labLearn+k)->setText(QString::number(classRoom->getStLearn(k)/100)+"%");
-                (labInterest+k)->setText(QString::number(classRoom->getStInterest(k))+"%");
-                (labDiscip+k)->setText(QString::number(classRoom->getStRuffian(k))+"%");
+                (labLearn+k)->setText(QString::number(classRoom->students[k].getLearn()/100)+"%");
+                (labInterest+k)->setText(QString::number(classRoom->students[k].getInterest())+"%");
+                (labDiscip+k)->setText(QString::number(classRoom->students[k].getRuffian())+"%");
                 (labSymbols+k)->setGeometry(142+i*160,315+j*100,wdth,hght);
                 (labLearn+k)->setGeometry(162+i*160,315+j*100,60,9);
                 (labInterest+k)->setGeometry(162+i*160,328+j*100,60,9);
@@ -423,13 +423,13 @@ void MainWindow::ShowHints()
                 (labInterest+k+1)->setParent(this);
                 (labDiscip+k+1)->setParent(this);
                 // Смайлик в зависимости от склонности к нарушению дисциплины
-                if (classRoom->getStRuffian(k+1) >= 70)(labSymbols+k+1)->setPixmap(statEvil);
-                else if (classRoom->getStRuffian(k+1) < 30) (labSymbols+k+1)->setPixmap(statKind);
+                if (classRoom->students[k+1].getRuffian() >= 70)(labSymbols+k+1)->setPixmap(statEvil);
+                else if (classRoom->students[k+1].getRuffian() < 30) (labSymbols+k+1)->setPixmap(statKind);
                 else
                 (labSymbols+k+1)->setPixmap(statNorm);
-                (labLearn+k+1)->setText(QString::number(classRoom->getStLearn(k+1)/100)+"%");
-                (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1))+"%");
-                (labDiscip+k+1)->setText(QString::number(classRoom->getStRuffian(k+1))+"%");
+                (labLearn+k+1)->setText(QString::number(classRoom->students[k+1].getLearn()/100)+"%");
+                (labInterest+k+1)->setText(QString::number(classRoom->students[k+1].getInterest())+"%");
+                (labDiscip+k+1)->setText(QString::number(classRoom->students[k+1].getRuffian())+"%");
                 (labSymbols+k+1)->setGeometry(142+i*160+55,315+j*100,wdth,hght);
                 (labLearn+k+1)->setGeometry(162+i*160+55,315+j*100,60,9);
                 (labInterest+k+1)->setGeometry(162+i*160+55,328+j*100,60,9);
@@ -450,19 +450,17 @@ void MainWindow::ShowHints()
 
 void MainWindow::Show1deskLab(int deskNum)
 {
-    if (classRoom->getStSex(deskNum*2) == "Девочка") (labels+deskNum)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
-    else if (classRoom->getStSex(deskNum*2) == "Мальчик") (labels+deskNum)->setPixmap(deskB);
+    if (classRoom->students[deskNum*2].getSex() == "Девочка") (labels+deskNum)->setPixmap(deskG);      //Отобразить внешность ученика согласно его полу
+    else if (classRoom->students[deskNum*2].getSex() == "Мальчик") (labels+deskNum)->setPixmap(deskB);
 }
 
 void MainWindow::Show2deskLab(int deskNum)
 {
-    if ((classRoom->getStSex(deskNum*2) == "Девочка")&&((classRoom->getStSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskGG);
-    else if ((classRoom->getStSex(deskNum*2) == "Девочка")&&((classRoom->getStSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskGB);
-    else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
-    else if ((classRoom->getStSex(deskNum*2) == "Мальчик")&&((classRoom->getStSex(deskNum*2+1) == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
+    if ((classRoom->students[deskNum*2].getSex() == "Девочка")&&((classRoom->students[deskNum*2+1].getSex() == "Девочка"))) (labels+deskNum)->setPixmap(deskGG);
+    else if ((classRoom->students[deskNum*2].getSex() == "Девочка")&&((classRoom->students[deskNum*2+1].getSex() == "Мальчик"))) (labels+deskNum)->setPixmap(deskGB);
+    else if ((classRoom->students[deskNum*2].getSex() == "Мальчик")&&((classRoom->students[deskNum*2+1].getSex() == "Девочка"))) (labels+deskNum)->setPixmap(deskBG);
+    else if ((classRoom->students[deskNum*2].getSex() == "Мальчик")&&((classRoom->students[deskNum*2+1].getSex() == "Мальчик"))) (labels+deskNum)->setPixmap(deskBB);
 }
-
-
 
 // Вид экрана до начала урока
 void MainWindow::BfrLsn()
@@ -518,7 +516,7 @@ void MainWindow::BeginLsn()
     for(int j = 0, k = 0; j < 5; j++)
         for (int i = 0; i < 3; i++, k+=2)
             if (classRoom->GetPlan(i+1,j+1) != 0)
-                if (classRoom->getStSex(k) == "")
+                if (classRoom->students[k].getSex() == "")
                 {
                     QMessageBox msgBox;
                     msgBox.setWindowTitle(" ");
@@ -587,20 +585,20 @@ void MainWindow::ChangeHints()
                 if (i == 3) {i = 0; j++;}
                 if ((classRoom->GetPlan(i+1,j+1) == 1)||(classRoom->GetPlan(i+1,j+1) == 2))
                 {
-                    dis = classRoom->getStDiscip(k);
-                    lrnng = classRoom->getStLearn(k)/100;
+                    dis = classRoom->students[k].getDiscip();
+                    lrnng = classRoom->students[k].getLearn()/100;
 
                     min = labMinutes->text().toInt();
                     sec = (labSeconds->text()).remove(0,1).toInt();
 
-                    l = classRoom->getStLearn(k);
+                    l = classRoom->students[k].getLearn();
                     xa = (min*60+sec)/24+1; // Время
                     ya = l/100.0;
                     lrnng=100.0*(ya/xa);
                     if (lrnng>100) lrnng = 100;
                     int ll = lrnng;
                     (labLearn+k)->setText(QString::number(ll) + "%");
-                    (labInterest+k)->setText(QString::number(classRoom->getStInterest(k)) + "%");
+                    (labInterest+k)->setText(QString::number(classRoom->students[k].getInterest()) + "%");
                     (labDiscip+k)->setText(QString::number(dis) + "%");
                     if (dis < 30) (labSymbols+k)->setPixmap(statKind);
                     else if (dis >= 70) (labSymbols+k)->setPixmap(statEvil);
@@ -608,20 +606,18 @@ void MainWindow::ChangeHints()
                 }
                 if (classRoom->GetPlan(i+1,j+1) == 2)
                 {
-                    dis = classRoom->getStDiscip(k+1);
-                    lrnng = classRoom->getStLearn(k+1)/100;
-
+                    dis = classRoom->students[k+1].getDiscip();
+                    lrnng = classRoom->students[k+1].getLearn()/100;
                     min = labMinutes->text().toInt();
                     sec = (labSeconds->text()).remove(0,1).toInt();
-
-                    l = classRoom->getStLearn(k+1);
+                    l = classRoom->students[k+1].getLearn();
                     xa = (min*60+sec)/24+1; // Время
                     ya = l/100.0;
                     lrnng=100.0*(ya/xa);
                     if (lrnng>100) lrnng = 100;
                     int ll = lrnng;
                     (labLearn+k+1)->setText(QString::number(ll) + "%");
-                    (labInterest+k+1)->setText(QString::number(classRoom->getStInterest(k+1)) + "%");
+                    (labInterest+k+1)->setText(QString::number(classRoom->students[k+1].getInterest()) + "%");
                     (labDiscip+k+1)->setText(QString::number(dis) + "%");
                     if (dis < 30) (labSymbols+k+1)->setPixmap(statKind);
                     else if (dis >= 70) (labSymbols+k+1)->setPixmap(statEvil);
@@ -720,11 +716,11 @@ void MainWindow::on_bDel_clicked()
      if(msgBox.clickedButton() == yes)
      {
          DeleteAllDesks();
-         classRoom->SetTeatcher("Учитель",100,50,50,50);
+         classRoom->teacher->SetTeacher("Учитель",100,50,50,50);
          for (int i = 0, j = 0, k = 0; k < 30; i++, k++)
                  { // Удалить данные всех учеников
                      if (i == 3) {i = 0; j++;}
-                     classRoom->setStudent(k,"Ученик","",100,50,50,50,50);
+                     classRoom->students[k].setStudent("Ученик","",100,50,50,50,50);
                  }
      }
      else if(msgBox.clickedButton() == no)  msgBox.close();

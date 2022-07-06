@@ -14,7 +14,8 @@ Subject::Subject()
 
 Subject::~Subject()
 {
-
+    delete blckbrd;
+    delete[] subjects;
 }
 
 QString Subject::getName()

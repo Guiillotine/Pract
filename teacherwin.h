@@ -1,19 +1,19 @@
-#ifndef TEATCHERWIN_H
-#define TEATCHERWIN_H
+#ifndef TEACHERWIN_H
+#define TEACHERWIN_H
 #include <QDialog>
 #include "mainwindow.h"
 
 namespace Ui {
-class TeatcherWin;
+class TeacherWin;
 }
 
-class TeatcherWin : public QDialog
+class TeacherWin : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit TeatcherWin(QWidget *parent = nullptr);
-    ~TeatcherWin();
+    explicit TeacherWin(QWidget *parent = nullptr);
+    ~TeacherWin();
     void FillWin(ClassRoom *cr);
     void PrintToLabel(QSlider *slider, QLabel *lab);
 private slots:
@@ -22,9 +22,9 @@ private slots:
     void on_bCancel_clicked();
 
 private:
-    Ui::TeatcherWin *ui;
+    Ui::TeacherWin *ui;
     QIcon icon, blank;
     ClassRoom *classR;
 };
 
-#endif // TEATCHERWIN_H
+#endif // TEACHERWIN_H

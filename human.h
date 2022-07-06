@@ -8,6 +8,8 @@ public:
     Human();
     QString fio;    // ФИО человека
     int health;     // Здоровье
+    QString getFio();
+    int getHealth();
 private:
 };
 

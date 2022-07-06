@@ -13,7 +13,7 @@
 #include <QMediaPlayer>         // Плееры для воспроизведения звука
 #include <QMediaPlayList>       // Для звука
 #include "classroom.h"          // Класс "Классная комната"
-#include "teatcherwin.h"        // Окно для заполнения данных учителя
+#include "teacherwin.h"        // Окно для заполнения данных учителя
 #include "studentwin1.h"        // Окно для заполнения одного ученика
 #include "studentwin2.h"        // Окно для заполнения двух учеников
 #include "human.h"              // Класс "Человек"

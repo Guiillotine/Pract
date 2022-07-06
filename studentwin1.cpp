@@ -26,6 +26,7 @@ StudentWin1::StudentWin1(QWidget *parent) :
 StudentWin1::~StudentWin1()
 {
     delete ui;
+    delete classR;
 }
 
 void StudentWin1::PrintToLabel(QSlider *slider, QLabel *lab)
@@ -36,26 +37,26 @@ void StudentWin1::PrintToLabel(QSlider *slider, QLabel *lab)
 
 void StudentWin1::FillWin(ClassRoom *cr,int k)
 {
-    if (cr->getStFio(k*2)=="Ученик") ui->lineEdit->setText("Уч. за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты
-    else ui->lineEdit->setText(cr->getStFio(k*2));
-    ui->cbSex->setCurrentText(cr->getStSex(k*2));
-    ui->SliderConcentr->setSliderPosition(cr->getStConcentr(k*2));
-    ui->SliderHealth->setSliderPosition(cr->getStHealth(k*2));
-    ui->SliderHumanit->setSliderPosition(cr->getStHumanit(k*2));
-    ui->SliderTechnical->setSliderPosition(cr->getStTechnical(k*2));
-    ui->SliderBad->setSliderPosition(cr->getStRuffian(k*2));
+    if (cr->students[k*2].getFio()=="Ученик") ui->lineEdit->setText("Уч. за партой " + QString::number(k+1)); //Назвать ученика согласно номеру парты
+    else ui->lineEdit->setText(cr->students[k*2].getFio());
+    ui->cbSex->setCurrentText(cr->students[k*2].getSex());
+    ui->SliderConcentr->setSliderPosition(cr->students[k*2].getConcentr());
+    ui->SliderHealth->setSliderPosition(cr->students[k*2].getHealth());
+    ui->SliderHumanit->setSliderPosition(cr->students[k*2].getHumanit());
+    ui->SliderTechnical->setSliderPosition(cr->students[k*2].getTechnical());
+    ui->SliderBad->setSliderPosition(cr->students[k*2].getRuffian());
     classR = cr; // Запомнить адрес объекта
     deskNumber = k; // Запомнить номер выбранной парты
-    if (cr->getStSex(30) != "") // Перемещаемый ученик
+    if (cr->students[30].getSex() != "") // Перемещаемый ученик
     {
-        if (cr->getStSex(30) == "Девочка") ui->label->setText(cr->getStFio(30) + " выбрана для перемещения");
-        else ui->label->setText(cr->getStFio(30) + " выбран для перемещения");
+        if (cr->students[30].getSex() == "Девочка") ui->label->setText(cr->students[30].getFio() + " выбрана для перемещения");
+        else ui->label->setText(cr->students[30].getFio() + " выбран для перемещения");
     }
 }
 
 void StudentWin1::SetStudent(ClassRoom *cr,int k)
 {
-    cr->setStudent(k*2,ui->lineEdit->text(),ui->cbSex->currentText(),ui->SliderHealth->value(),ui->SliderConcentr->value(), ui->SliderHumanit->value(),ui->SliderTechnical->value(),ui->SliderBad->value());
+    cr->students[k*2].setStudent(ui->lineEdit->text(),ui->cbSex->currentText(),ui->SliderHealth->value(),ui->SliderConcentr->value(), ui->SliderHumanit->value(),ui->SliderTechnical->value(),ui->SliderBad->value());
 }
 
 void StudentWin1::on_bCancel_clicked()
@@ -83,20 +84,20 @@ void StudentWin1::on_bOk_clicked()
 
 void StudentWin1::on_bCopy_clicked()
 {
-    if (classR->getStSex(deskNumber*2)!= "")
+    if (classR->students[deskNumber*2].getSex()!= "")
     {
         classR->CopySt(deskNumber*2);// Копировать
-        if (classR->getStSex(deskNumber*2) == "Девочка") ui->label->setText(classR->getStFio(deskNumber*2) + " выбрана для перемещения");
-        else ui->label->setText(classR->getStFio(deskNumber*2) + " выбран для перемещения");
+        if (classR->students[deskNumber*2].getSex() == "Девочка") ui->label->setText(classR->students[deskNumber*2].getFio() + " выбрана для перемещения");
+        else ui->label->setText(classR->students[deskNumber*2].getFio() + " выбран для перемещения");
     }
 }
 
 void StudentWin1::on_bPaste_clicked()
 {
-    if ((classR->getStSex(30)!= "")&&(classR->getStSex(deskNumber*2)!= "")) // Если буфер не пуст и есть, с кем меняться
+    if ((classR->students[30].getSex()!= "")&&(classR->students[deskNumber*2].getSex()!= "")) // Если буфер не пуст и есть, с кем меняться
     {
         classR->PasteSt(deskNumber*2);// Вставить
         FillWin(classR,deskNumber); // Заполнить окно новыми данными
-        ui->label->setText(classR->getStFio(classR->getBuffStNum()) + " и " + classR->getStFio(30) + " поменялись местами");
+        ui->label->setText(classR->students[classR->getBuffStNum()].getFio() + " и " + classR->students[30].getFio() + " поменялись местами");
     }
 }

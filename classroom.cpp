@@ -3,9 +3,16 @@
 ClassRoom::ClassRoom()
 {
     students = new Student[31]; // Максимально возможное количество учеников - 30, +1 - буфер для пересадки
-    teatcher = new Teacher();
+    teacher = new Teacher();
     subject = new Subject();
     BuffStNum = -1; // Номер ученика при пересадке
+}
+
+ClassRoom::~ClassRoom()
+{
+    delete subject;
+    delete teacher;
+    delete[] students;
 }
 
 void ClassRoom::EditPlan(int row, int number, int value)
@@ -116,56 +123,56 @@ void ClassRoom::Student::changeIntrst(int creat, int hum,int tech)
     if (interest < 0) interest = 0;
 }
 
-void ClassRoom::setStudent(int numberSt, QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
+void ClassRoom::Student::setStudent(QString fio,QString sex, int health, int concentr, int humanit, int technical, int ruffian)
 {
     if (health < 0) health = 0; if (health > 99) health = 99;
     if (concentr < 0) concentr = 0; if (concentr > 99) concentr = 99;
     if (humanit < 0) humanit = 0; if (humanit > 99) humanit = 99;
     if (technical < 0) technical = 0; if (technical > 99) technical = 99;
     if (ruffian < 0) ruffian = 0; if (ruffian > 99) ruffian = 99;
-    (students+numberSt)->fio = fio;
-    (students+numberSt)->sex = sex;
-    (students+numberSt)->health = health;
-    (students+numberSt)->concentr = concentr;
-    (students+numberSt)->humanit = humanit;
-    (students+numberSt)->technical = technical;
-    (students+numberSt)-> ruffian = ruffian;
+    this->fio = fio;
+    this->sex = sex;
+    this->health = health;
+    this->concentr = concentr;
+    this->humanit = humanit;
+    this->technical = technical;
+    this-> ruffian = ruffian;
 }
 
-void ClassRoom::setHints(int numberSt, int learn, int interest, int discip)
+void ClassRoom::Student::setHints(int learn, int interest, int discip)
 {
-    (students+numberSt)->learn = learn;
-    (students+numberSt)->interest = interest;
-    (students+numberSt)->discip = discip;
+    this->learn = learn;
+    this->interest = interest;
+    this->discip = discip;
 }
 
 void ClassRoom::CopySt(int numberSt) // Скопировать данные указанного ученика в конец массива учеников (буфер)
 {
-    setStudent(30, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
+    (students+30)->setStudent((students+numberSt)->getFio(), (students+numberSt)->getSex(), (students+numberSt)->getHealth(), (students+numberSt)->getConcentr(), (students+numberSt)->getHumanit(), (students+numberSt)->getTechnical(), (students+numberSt)->getRuffian());
     BuffStNum = numberSt;
 }
 
 void ClassRoom::PasteSt(int numberSt) // Скопировать данные из конца массива учеников (буфера) в указанного ученика
 {
-    if (getStSex(numberSt)!="")
+    if ((students+numberSt)->getSex()!="")
     {
         ClassRoom tmp;
         // Копировать данные ученика, на место которого совершена вставка из буфера
-        tmp.setStudent(0, getStFio(numberSt), getStSex(numberSt), getStHealth(numberSt), getStConcentr(numberSt), getStHumanit(numberSt), getStTechnical(numberSt), getStRuffian(numberSt));
-        tmp.setHints(0, getStLearn(numberSt), getStInterest(numberSt), getStDiscip(numberSt));
+        tmp.students[0].setStudent(students[numberSt].getFio(), students[numberSt].getSex(), students[numberSt].getHealth(), students[numberSt].getConcentr(), students[numberSt].getHumanit(), students[numberSt].getTechnical(), students[numberSt].getRuffian());
+        tmp.students[0].setHints(students[numberSt].getLearn(), students[numberSt].getInterest(), students[numberSt].getDiscip());
         // Вставка из буффера
-        setStudent(numberSt, getStFio(BuffStNum), getStSex(BuffStNum), getStHealth(BuffStNum), getStConcentr(BuffStNum), getStHumanit(BuffStNum), getStTechnical(BuffStNum), getStRuffian(BuffStNum));
-        setHints(numberSt, getStLearn(BuffStNum), getStInterest(BuffStNum), getStDiscip(BuffStNum));
+        students[numberSt].setStudent(students[BuffStNum].getFio(), students[BuffStNum].getSex(), students[BuffStNum].getHealth(), students[BuffStNum].getConcentr(), students[BuffStNum].getHumanit(), students[BuffStNum].getTechnical(), students[BuffStNum].getRuffian());
+        students[numberSt].setHints(students[BuffStNum].getLearn(), students[BuffStNum].getInterest(), students[BuffStNum].getDiscip());
         // Вставка из временного объекта на место, с которого было совершено копирование
-        setStudent(BuffStNum, tmp.getStFio(0), tmp.getStSex(0), tmp.getStHealth(0), tmp.getStConcentr(0), tmp.getStHumanit(0), tmp.getStTechnical(0), tmp.getStRuffian(0));
-        setHints(BuffStNum, tmp.getStLearn(0), tmp.getStInterest(0), tmp.getStDiscip(0));
-        setStudent(30,getStFio(30),"",0,0,0,0,0); // Очистить буфер
+        students[BuffStNum].setStudent(tmp.students[0].getFio(), tmp.students[0].getSex(), tmp.students[0].getHealth(), tmp.students[0].getConcentr(), tmp.students[0].getHumanit(), tmp.students[0].getTechnical(), tmp.students[0].getRuffian());
+        students[BuffStNum].setHints(tmp.students[0].getLearn(), tmp.students[0].getInterest(), tmp.students[0].getDiscip());
+        students[30].setStudent(students[30].getFio(),"",0,0,0,0,0); // Очистить буфер
     }
 }
 
-void ClassRoom::DelSt(int numberSt)
+void ClassRoom::Student::DelSt()
 {
-    setStudent(numberSt,"Ученик","",100,50,50,50,50);
+    setStudent("Ученик","",100,50,50,50,50);
 }
 
 void ClassRoom::StLearning(int numberSt)
@@ -174,18 +181,18 @@ void ClassRoom::StLearning(int numberSt)
     int x = numberDsk/3; int y = numberDsk%3;
     int fEvil = 0;
     int maxNegNum = -1;
-    int st = teatcher->strictness;
-    int cr = teatcher->creativity;
-    int com = teatcher->communication;
-    int tHlth = teatcher->health;
+    int st = teacher->getStrict();
+    int cr = teacher->getCreat();
+    int com = teacher->getComm();
+    int tHlth = teacher->health;
     // Все способности учителя зависят от его здоровья
     st = st - (99-tHlth)/3;
     cr = cr - (99-tHlth)/3;
     com = com - (99-tHlth)/3;
 
     // Чем больше склонность к нарушению дисциплины, тем больше вероятность совершения проступка
-    if ((rand() % 20 == 12)&&(((students+numberSt)->ruffian > 50))||((students+numberSt)->discip >= 90))  fEvil = 1;
-    if ((rand() % 20 == 12)&&((students+numberSt)->ruffian >= 80)) fEvil = 1; // Увеличить вероятность в 2 раза
+    if ((rand() % 20 == 12)&&(((students+numberSt)->getRuffian() > 50))||((students+numberSt)->getDiscip() >= 90))  fEvil = 1;
+    if ((rand() % 20 == 12)&&((students+numberSt)->getRuffian() >= 80)) fEvil = 1; // Увеличить вероятность в 2 раза
 
     // Чем больше строгость учителя, тем больше случаев снижения негатива у учеников
     if ((st >= 90)&&(rand() % 2))
@@ -199,52 +206,52 @@ void ClassRoom::StLearning(int numberSt)
         if (maxNegNum!=-1) (students+maxNegNum)->subNegative(maxNegNum/2);
     }
 
-    if (fEvil) (students+numberSt)->addNegative((students+numberSt)->discip+50);
-    if ((students+numberSt)->discip >= 70) setStfDiscip(numberSt); // Злился ли ученик
+    if (fEvil) (students+numberSt)->addNegative((students+numberSt)->getDiscip()+50);
+    if ((students+numberSt)->getDiscip() >= 70) (students+numberSt)->setfDiscip(); // Злился ли ученик
 
-    if ((getStSex(numberSt+1)!="")&&(numberSt%2 == 0)) // Если есть сосед по парте справа
-        if (fEvil) (students+(numberSt+1))->addNegative((students+numberSt)->discip+10);
+    if (((students+numberSt+1)->getSex()!="")&&(numberSt%2 == 0)) // Если есть сосед по парте справа
+        if (fEvil) (students+(numberSt+1))->addNegative((students+numberSt)->getDiscip()+10);
     if (numberSt%2) // Если есть сосед по парте слева
-        if (fEvil) (students+(numberSt-1))->addNegative((students+numberSt)->discip+10);
+        if (fEvil) (students+(numberSt-1))->addNegative((students+numberSt)->getDiscip()+10);
 
-    if ((x - 1 >= 0)&&(getStSex(((x-1)*3+y)*2))!="")
+    if ((x - 1 >= 0)&&((students+(((x-1)*3+y)*2))->getSex()!=""))
         if (fEvil)
         {
             int n = ((x-1)*3+y)*2;
-            (students+n)->addNegative((students+numberSt)->discip);
-            if (getStSex(n+1)!="")
-                (students+n+1)->addNegative((students+numberSt)->discip);
+            (students+n)->addNegative((students+numberSt)->getDiscip());
+            if ((students+n+1)->getSex()!="")
+                (students+n+1)->addNegative((students+numberSt)->getDiscip());
         }
-    if ((x + 1 <= 4)&&(getStSex(((x+1)*3+y)*2))!="")
+    if ((x + 1 <= 4)&&((students+((x+1)*3+y)*2))->getSex()!="")
         if (fEvil)
         {
             int n = ((x+1)*3+y)*2;
-            (students + n)->addNegative((students+numberSt)->discip);
-            if (getStSex(n+1)!="")
-                (students+n+1)->addNegative((students+numberSt)->discip);
+            (students + n)->addNegative((students+numberSt)->getDiscip());
+            if ((students+n+1)->getSex()!="")
+                (students+n+1)->addNegative((students+numberSt)->getDiscip());
         }
-    if ((y + 1 <= 2)&&(getStSex((x*3+(y+1))*2)!=""))
+    if ((y + 1 <= 2)&&((students+(x*3+(y+1))*2)->getSex()!=""))
         if (fEvil)
         {
             int n = (x*3+(y+1))*2;
-            (students+n)->addNegative((students+numberSt)->discip);
-            if (getStSex(n+1)!="")
+            (students+n)->addNegative((students+numberSt)->getDiscip());
+            if ((students+n+1)->getSex()!="")
             {
-                (students+n+1)->addNegative((students+numberSt)->discip);
+                (students+n+1)->addNegative((students+numberSt)->getDiscip());
             }
         }
-    if ((y - 1 >= 0)&&(getStSex((x*3+(y-1))*2)!=""))
+    if ((y - 1 >= 0)&&((students+(x*3+(y-1))*2)->getSex()!=""))
         if (fEvil)
         {
             int n = (x*3+(y-1))*2;
-            (students+n)->addNegative((students+numberSt)->discip);
-            if (getStSex(n+1)!="")
+            (students+n)->addNegative((students+numberSt)->getDiscip());
+            if ((students+n+1)->getSex()!="")
             {
-                (students+n+1)->addNegative((students+numberSt)->discip);
+                (students+n+1)->addNegative((students+numberSt)->getDiscip());
             }
         }
     (students+numberSt)->changeIntrst(cr,subject->getHumanit(),subject->getTechnical());
-    if ((students+numberSt)->interest >= 50) setStfIntrst(numberSt); // Был ли ученик заинтересован уроком
+    if ((students+numberSt)->getInterest() >= 50) (students+numberSt)->setfIntrst(); // Был ли ученик заинтересован уроком
     (students+numberSt)->addLearn(numberDsk,com); // Усвоение урока
 
     /*QString str = QString::number(numberDsk) + " ";
@@ -262,87 +269,82 @@ void ClassRoom::StLearning(int numberSt)
 
 void ClassRoom::StInitHints(int numberSt)
 {
-    (students+numberSt)->changeIntrst(teatcher->creativity,subject->getHumanit(),subject->getTechnical());
+    (students+numberSt)->changeIntrst(teacher->getCreat(),subject->getHumanit(),subject->getTechnical());
     (students+numberSt)->initHints();
-}
-
-QString ClassRoom::getStFio(int numberSt)
-{
-    return (students+numberSt)->fio;
-}
-
-QString ClassRoom::getStSex(int numberSt)
-{
-    return (students+numberSt)->sex;
-}
-
-int ClassRoom::getStConcentr(int numberSt)
-{
-    return (students+numberSt)->concentr;
-}
-
-int ClassRoom::getStHumanit(int numberSt)
-{
-    return (students+numberSt)->humanit;
-}
-
-int ClassRoom::getStTechnical(int numberSt)
-{
-    return (students+numberSt)->technical;
-}
-
-int ClassRoom::getStRuffian(int numberSt)
-{
-    return (students+numberSt)->ruffian;
-}
-
-int ClassRoom::getStHealth(int numberSt)
-{
-    return (students+numberSt)->health;
-}
-
-int ClassRoom::getStLearn(int numberSt)
-{
-    return (students+numberSt)->learn;
-}
-
-int ClassRoom::getStInterest(int numberSt)
-{
-    return (students+numberSt)->interest;
-}
-
-int ClassRoom::getStDiscip(int numberSt)
-{
-    return (students+numberSt)->discip;
-}
-
-int ClassRoom::getStfDiscip(int numberSt)
-{
-    return (students+numberSt)->fDiscip;
-}
-
-void ClassRoom::setStfDiscip(int numberSt)
-{
-    (students+numberSt)->fDiscip = 1;
-}
-
-int ClassRoom::getStfIntrst(int numberSt)
-{
-    return (students+numberSt)->fIntrst;
-}
-
-void ClassRoom::setStfIntrst(int numberSt)
-{
-    (students+numberSt)->fIntrst = 1;
 }
 
 void ClassRoom::clearStFlags()
 {
     for (int i = 0; i < 30; i++)
     {
-        (students+i)->fDiscip = 0;
-        (students+i)->fIntrst = 0;
+        (students+i)->clearFlags();
     }
+}
+
+QString ClassRoom::Student::getSex()
+{
+    return sex;
+}
+
+int ClassRoom::Student::getConcentr()
+{
+    return concentr;
+}
+
+int ClassRoom::Student::getHumanit()
+{
+    return humanit;
+}
+
+int ClassRoom::Student::getTechnical()
+{
+    return technical;
+}
+
+int ClassRoom::Student::getRuffian()
+{
+    return ruffian;
+}
+
+int ClassRoom::Student::getLearn()
+{
+    return learn;
+}
+
+int ClassRoom::Student::getInterest()
+{
+    return interest;
+}
+
+int ClassRoom::Student::getDiscip()
+{
+    return discip;
+}
+
+int ClassRoom::Student::getfDiscip()
+{
+    return fDiscip;
+}
+
+void ClassRoom::Student::setfDiscip()
+{
+    fDiscip = 1;
+}
+
+int ClassRoom::Student::getfIntrst()
+{
+    return fIntrst;
+}
+
+void ClassRoom::Student::setfIntrst()
+{
+    fIntrst = 1;
+}
+
+void ClassRoom::Student::clearFlags()
+{
+    fDiscip = 0;
+    fIntrst = 0;
 }
 
 int ClassRoom::getBuffStNum()
@@ -355,46 +357,36 @@ int ClassRoom::MaxNegSearch()
     int numb = -1;
     int max = -1;
     for (int i = 0; i < 30; i++)
-        if ((getStSex(i) != "")&&(max < getStDiscip(i))&&(getStDiscip(i) > 50))
+        if (((students + i)->getSex() != "")&&(max < (students + i)->getDiscip())&&((students + i)->getDiscip() > 50))
         {
-            max = getStDiscip(i);
+            max = (students + i)->getDiscip();
             numb = i;
         }
     return numb;
 }
 
-void ClassRoom::SetTeatcher(QString fio, int health, int communication, int creativity, int strictness)
+void ClassRoom::Teacher::SetTeacher(QString fio, int health, int communication, int creativity, int strictness)
 {
-    teatcher->fio = fio;
-    teatcher->health = health;
-    teatcher->communication = communication;
-    teatcher->creativity = creativity;
-    teatcher->strictness = strictness;
+    this->fio = fio;
+    this->health = health;
+    this->communication = communication;
+    this->creativity = creativity;
+    this->strictness = strictness;
 }
 
-QString ClassRoom::getTchrFio()
+int ClassRoom::Teacher::getComm()
 {
-    return teatcher->fio;
+    return communication;
 }
 
-int ClassRoom::getTchrHealth()
+int ClassRoom::Teacher::getCreat()
 {
-    return teatcher->health;
+    return creativity;
 }
 
-int ClassRoom::getTchrComm()
+int ClassRoom::Teacher::getStrict()
 {
-    return teatcher->communication;
-}
-
-int ClassRoom::getTchrCreat()
-{
-    return teatcher->creativity;
-}
-
-int ClassRoom::getTchrStrict()
-{
-    return teatcher->strictness;
+    return strictness;
 }
 
 ClassRoom::Teacher::Teacher()

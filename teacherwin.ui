@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TeatcherWin</class>
- <widget class="QDialog" name="TeatcherWin">
+ <class>TeacherWin</class>
+ <widget class="QDialog" name="TeacherWin">
   <property name="geometry">
    <rect>
     <x>0</x>
