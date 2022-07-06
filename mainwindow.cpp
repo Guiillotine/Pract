@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timerLsn, SIGNAL(timeout()),this, SLOT(DuringLsn()));  // Связать таймер со слотом
     connect(timer2, SIGNAL(timeout()),this, SLOT(tcherGoes()));  // Связать таймер 2 со слотом
     time = new QTime(0,0,0);
-
     //************Картинки**************
     icon.addFile(":/images/icon.ico");blank.addFile(":/images/Blank.ico");
     crossOn.load(":/images/crossGr.png");crossOff.load(":/images/cross.png");
@@ -38,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     //
     scrollArea = new QScrollArea();                    // Полосы прокрутки при уменьшении размеров окна
     scrollArea->setWindowIcon(icon);
+    scrollArea->setWindowTitle("Моделирование поведения учеников в классе");
     this->setGeometry(0,0,menu.width(),menu.height());      // Задать размеры окна размерами изображения
     point1 = new QPoint(menu1.width()/2,menu1.height()/2);  // Координаты центра labMenu1
     point2 = new QPoint(menu2.width()/2,menu2.height()/2);  // Координаты центра labMenu2
@@ -143,8 +143,16 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete[] labels; // Освобождение памяти от массива
+    delete[] labSymbols;
     delete labMenu1; delete labMenu2; delete labCounter;
+    delete labMinutes; delete labSeconds; delete labStWtch;
+    delete labLearn; delete labInterest; delete labDiscip;
+    delete labCounter;
     delete labTcher;
+    delete labBoard;
+    delete timer;delete timerDrag;delete timer2;delete timerLsn;
+    delete point1;delete point2;delete pointDel;
+    delete stwtch;
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -556,12 +564,6 @@ void MainWindow::BeginLsn()
 // Происходящее во время урока
 void MainWindow::DuringLsn()
 {
-    static int a = 0;
-    a++;
-    /*labMenu1->show();
-    labMenu1->setText(QString::number(a));*/
-
-
     for (int i = 0, j = 0, k = 0; k < 30; i++, k+=2)
     {
         if (i == 3) {i = 0; j++;}
