@@ -18,7 +18,6 @@ public:
     void PrintToLabel(QSlider *slider, QLabel *lab);
 private slots:
     void on_bOk_clicked();
-
     void on_bCancel_clicked();
 
 private:

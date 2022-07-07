@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     tcher1.load(":/images/teatcher3-1.png");tcher2.load(":/images/teatcher3-2.png");tcher3.load(":/images/teatcher3-3.png");
     tcher4.load(":/images/teatcher3-4.png");tcher5.load(":/images/teatcher3-5.png");tcher6.load(":/images/teatcher3-6.png");
     statKind.load(":/images/statKind.png");statNorm.load(":/images/statNorm.png");statEvil.load(":/images/statEvil.png");
+    table.load(":/images/table.png");
     //*************Звуки***************
     // Звонок
     m_player = new QMediaPlayer(this);
@@ -104,6 +105,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Школьная доска
     labBoard = new QLabel(this);
     labBoard->setGeometry(305,0,300,100);
+    // Таблица с подсказками
+    labTab = new MyLabel(this,table);
+    labTab->setPos(753,310);
     //*********************************
     // Выпадающий список с предметами
     cmbbox = new QComboBox(this);
@@ -479,6 +483,7 @@ void MainWindow::BfrLsn()
     bPause->setEnabled(false);
     bPause->setText("Редактировать");
     labBoard->hide();
+    labTab->hide();
     labMinutes->hide();
     labSeconds->hide();
     labStWtch->hide();
@@ -537,6 +542,7 @@ void MainWindow::BeginLsn()
     bExit->hide();
     bFinLsn->show();
     bPause->show();
+    labTab->show();
     classRoom->subject->setSubj(cmbbox->currentText());
     classRoom->subject->showBlackboard(labBoard);
     classRoom->clearStFlags();

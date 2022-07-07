@@ -24,6 +24,7 @@ private:
     {
         public:
             Blackboard();
+            ~Blackboard();
             QPixmap maths,russ,hist,geogr;
             void ShowSubjName(QLabel *lab, QString SubjName);
     };

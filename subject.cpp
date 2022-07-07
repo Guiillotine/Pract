@@ -91,6 +91,11 @@ Subject::Blackboard::Blackboard()
     geogr.load(":/images/geography.png");
 }
 
+Subject::Blackboard::~Blackboard()
+{
+
+}
+
 void Subject::Blackboard::ShowSubjName(QLabel *lab, QString SubjName)
 {
     lab->show();

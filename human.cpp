@@ -6,6 +6,11 @@ Human::Human()
     health = 99;
 }
 
+Human::~Human()
+{
+
+}
+
 QString Human::getFio()
 {
     return fio;

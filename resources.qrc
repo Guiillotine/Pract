@@ -47,5 +47,6 @@
         <file>images/history.png</file>
         <file>images/maths.png</file>
         <file>images/russ.png</file>
+        <file>images/table.png</file>
     </qresource>
 </RCC>

@@ -70,6 +70,7 @@ private:
     QPixmap desk1,desk2;                // Одноместная и двухместная парты
     QPixmap deskGG,deskBB,deskGB,deskBG,deskB,deskG; // Парты с учениками - мальчиками и девочками
     QPixmap statKind,statNorm,statEvil; // Символические картинки - подсказки состояния ученика
+    QPixmap table;                      // Таблица с разъяснением символов
     QPalette palette;                   // Для установки заднего фона окна
     QTimer *timer,*timerDrag,*timer2,*timerLsn;// Таймеры
     QTime  *time;                       // Время
@@ -84,6 +85,7 @@ private:
     QLabel *labCounter;                     // Оставшееся доступное кол-во парт для размещения
     MyLabel *labTcher;                              // Учитель
     QLabel *labBoard;                               // Школьная доска
+    MyLabel *labTab;                                // Таблица символов
     MyButton *bCont,*bExit,*bDel;                   // Кнопки меню создание классной комнаты
     MyButton *bPause,*bFinLsn;                      // Кнопки меню во время урока
     QComboBox *cmbbox;

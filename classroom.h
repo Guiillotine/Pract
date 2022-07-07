@@ -24,6 +24,7 @@ public:
     {
         public:
             Student();
+            ~Student();
             void setStudent(QString fio,QString sex,int health,int concentr,int humanit,int technical,int ruffian);
             void DelSt();  // Удалить из списка данные студента с заданным номером
             QString getSex();
@@ -62,6 +63,7 @@ public:
     {
         public:
             Teacher();
+            ~Teacher();
             void SetTeacher(QString fio,int health,int communication, int creativity, int strictness);
             int getComm();
             int getCreat();

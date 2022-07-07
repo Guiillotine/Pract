@@ -6,11 +6,12 @@ class Human
 {
 public:
     Human();
-    QString fio;    // ФИО человека
-    int health;     // Здоровье
+    ~Human();
     QString getFio();
     int getHealth();
-private:
+protected:
+    QString fio;    // ФИО человека
+    int health;     // Здоровье
 };
 
 #endif // HUMAN_H

@@ -47,6 +47,11 @@ ClassRoom::Student::Student()
     fIntrst = 0;   // Был ли ученик заинтересован
 }
 
+ClassRoom::Student::~Student()
+{
+
+}
+
 void ClassRoom::Student::initHints()
 {
     if (interest > 100) interest = 100;
@@ -184,7 +189,7 @@ void ClassRoom::StLearning(int numberSt)
     int st = teacher->getStrict();
     int cr = teacher->getCreat();
     int com = teacher->getComm();
-    int tHlth = teacher->health;
+    int tHlth = teacher->getHealth();
     // Все способности учителя зависят от его здоровья
     st = st - (99-tHlth)/3;
     cr = cr - (99-tHlth)/3;
@@ -395,4 +400,9 @@ ClassRoom::Teacher::Teacher()
     communication = 50;// Коммунитативные способности
     creativity = 50;   // Креативность
     strictness = 50;   // Строгость
+}
+
+ClassRoom::Teacher::~Teacher()
+{
+
 }
