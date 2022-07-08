@@ -517,7 +517,23 @@ void MainWindow::BfrLsn()
 }
 
 void MainWindow::BeginLsn()
-{  //Проверка: начать урок только если параметры указаны для всех учеников
+{   // Проверка: начать урок только если в классе присутствует хотя бы один ученик
+    int f = 0;
+    for(int j = 0, k = 0; j < 5; j++)
+        for (int i = 0; i < 3; i++, k+=2)
+            if (classRoom->GetPlan(i+1,j+1) != 0) f = 1;
+    if (!f)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(" ");
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("В классе отсутствуют ученики");
+        msgBox.setWindowIcon(blank);
+        msgBox.exec();
+        return;
+    }
+    else{
+    //Проверка: начать урок только если параметры указаны для всех учеников
     for(int j = 0, k = 0; j < 5; j++)
         for (int i = 0; i < 3; i++, k+=2)
             if (classRoom->GetPlan(i+1,j+1) != 0)
@@ -563,6 +579,7 @@ void MainWindow::BeginLsn()
     time->restart();          // Начать отсчет времени
     timer2->start(100);       // Запустить анимацию захода учителя в класс
     labMinutes->show();labSeconds->show();labStWtch->show(); // Секундомер
+    }
 }
 
 // Происходящее во время урока
